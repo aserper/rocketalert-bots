@@ -31,4 +31,4 @@ payload = data["payload"]
 # Note that this won't work when using 2FA - you'll have to use OAuth, in that case.
 # To post, create an actual API instance:
 mastodon = Mastodon(access_token = 'pytooter_usercred.secret')
-mastodon.toot('Number of alerts today: {}. Learn more at https://rocketalert.live #IsraelUnderAttack #Israel #rockets'.format(str(payload[0]['alerts'])))
+mastodon.toot('Number of alerts in Israel today: {}. Learn more at https://rocketalert.live #IsraelUnderAttack #Israel #rockets'.format(str(payload[0]['alerts'])))
