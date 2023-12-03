@@ -36,11 +36,12 @@ def handle_sse_events(mastodon_instance):
                     if event.data:
                         data = json.loads(event.data)
                         area_name_en = data.get('areaNameEn', '')
-                        city_name_en = data.get('name', '')
+                        city_name_he = data.get('name', '')
+                        city_name_en = data.get('englishName', '')
                         timestamp = data.get('timeStamp', '')
 
                         # Create the message text
-                        message_text = f"🚨🚨🚨 Rocket alert in Israel 🚨🚨🚨\n Town/city: {city_name_en}\n " \
+                        message_text = f"🚨🚨🚨 Rocket alert in Israel 🚨🚨🚨\n Town/city: {city_name_en}/{city_name_he}\n " \
                                        f"District Name: {area_name_en}\nTimestamp: " \
                                        f"{timestamp}\n Learn more at https://rocketalert.live"
 
