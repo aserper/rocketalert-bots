@@ -27,7 +27,7 @@ mastodon.log_in(
 
 # Define a function to handle SSE events and post to Mastodon
 def handle_sse_events(mastodon_instance):
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
+    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"  # Replace with your SSE stream URL
     client = SSEClient(sse_url)  # Create the SSEClient object
     try:
         for event in client:
@@ -44,6 +44,8 @@ def handle_sse_events(mastodon_instance):
 
                         # Post the message to Mastodon
                         mastodon_instance.toot(message_text)
+                        #Log to stdout that the message was posted
+                        print("Message posted sucsessfully: {0}".format(message_text))
                 except Exception as e:
                     print(f"Error processing SSE event: {e}")
     finally:
