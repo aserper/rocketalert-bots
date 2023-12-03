@@ -32,7 +32,7 @@ alerts = []
 
 # Function to handle SSE events and append alerts
 def handle_sse_events():
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"  # Replace with your SSE stream URL
+    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
     client = SSEClient(sse_url)  # Create the SSEClient object
     try:
         for event in client:
