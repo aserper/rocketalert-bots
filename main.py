@@ -9,13 +9,13 @@ formatted_date = today_date.strftime("%Y-%m-%d")
 # Register your app! This only needs to be done once (per server, or when
 # distributing rather than hosting an application, most likely per device and server).
 # Uncomment the code and substitute in your information:
-
+print("Program started")
 Mastodon.create_app(
     'rocketalert',
     api_base_url='https://mastodon.social',
     to_file='pytooter_clientcred.secret'
 )
-
+print("Mastodon connection object created")
 # Then, log in. This can be done every time your application starts (e.g., when writing a
 # simple bot), or you can use the persisted information:
 mastodon = Mastodon(client_id='pytooter_clientcred.secret',)
@@ -24,8 +24,9 @@ mastodon.log_in(
     '!)5oMS@MFJp$vOw4+NAK',
     to_file='pytooter_usercred.secret'
 )
-
+print("Logged in")
 # Define a function to handle SSE events and post to Mastodon
+print("Connecting to sse")
 def handle_sse_events(mastodon_instance):
     sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
     client = SSEClient(sse_url)  # Create the SSEClient object
