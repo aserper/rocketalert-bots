@@ -60,6 +60,6 @@ def handle_sse_events(mastodon_instance):
 if __name__ == "__main__":
     # Use the persisted Mastodon information to log in
     mastodon_user = Mastodon(access_token='pytooter_usercred.secret')
-
-    # Start listening to SSE events and posting to Mastodon
+    print("Main function hit")
+    print("Start listening to SSE events and posting to Mastodon")
     handle_sse_events(mastodon_user)
