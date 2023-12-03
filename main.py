@@ -2,6 +2,7 @@ from mastodon import Mastodon
 import json
 from sseclient import SSEClient
 from datetime import datetime
+import threading
 
 today_date = datetime.now().date()
 formatted_date = today_date.strftime("%Y-%m-%d")
@@ -25,10 +26,13 @@ mastodon.log_in(
     to_file='pytooter_usercred.secret'
 )
 print("Logged in")
-# Define a function to handle SSE events and post to Mastodon
-print("Connecting to sse")
-def handle_sse_events(mastodon_instance):
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
+
+# List to store alerts
+alerts = []
+
+# Function to handle SSE events and append alerts
+def handle_sse_events():
+    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"  # Replace with your SSE stream URL
     client = SSEClient(sse_url)  # Create the SSEClient object
     try:
         for event in client:
@@ -36,30 +40,59 @@ def handle_sse_events(mastodon_instance):
                 try:
                     if event.data:
                         data = json.loads(event.data)
-                        area_name_he = data.get('areaNameHe', '')
                         area_name_en = data.get('areaNameEn', '')
                         city_name_he = data.get('name', '')
                         city_name_en = data.get('englishName', '')
                         timestamp = data.get('timeStamp', '')
 
-                        # Create the message text
-                        message_text = f"🚨🚨🚨 Rocket alert in Israel 🚨🚨🚨\n Town/city: {city_name_en}/{city_name_he}\n " \
-                                       f"District Name: {area_name_en}/{area_name_he}\nTimestamp: " \
-                                       f"{timestamp}\n Learn more at https://rocketalert.live"
+                        # Create the alert text
+                        alert_text = f"Town/city: {city_name_en}/{city_name_he}\n" \
+                                     f"District Name: {area_name_en}\n" \
+                                     f"Timestamp: {timestamp}\n\n"
 
-                        # Post the message to Mastodon
-                        mastodon_instance.toot(message_text)
-                        #Log to stdout that the message was posted
-                        print("Message posted sucsessfully: {0}".format(message_text))
+                        # Append the alert to the list
+                        alerts.append(alert_text)
                 except Exception as e:
                     print(f"Error processing SSE event: {e}")
     finally:
         client.close()  # Close the SSEClient when done
 
+# Function to post combined alerts to Mastodon
+def post_combined_alerts(mastodon_instance):
+    global alerts
+    while True:
+        if alerts:
+            # Create a combined message from all alerts
+            combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
+                              "Learn more at https://rocketalert.live"
+
+            # Post the combined message to Mastodon
+            mastodon_instance.toot(combined_message)
+
+            # Log to stdout that the message was posted successfully
+            print("Message posted successfully:\n{0}".format(combined_message))
+
+            # Clear the alerts list
+            alerts = []
+
 # Main script
 if __name__ == "__main__":
     # Use the persisted Mastodon information to log in
     mastodon_user = Mastodon(access_token='pytooter_usercred.secret')
-    print("Main function hit")
-    print("Start listening to SSE events and posting to Mastodon")
-    handle_sse_events(mastodon_user)
+
+    # Start a thread to handle SSE events and append alerts
+    sse_thread = threading.Thread(target=handle_sse_events)
+    sse_thread.daemon = True
+    sse_thread.start()
+
+    # Start a thread to post combined alerts to Mastodon
+    post_thread = threading.Thread(target=post_combined_alerts, args=(mastodon_user,))
+    post_thread.daemon = True
+    post_thread.start()
+
+    # Keep the main thread running
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        print("Program terminated")
