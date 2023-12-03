@@ -1,0 +1,6 @@
+pytooter_clientcred.secret
+pytooter_usercred.secret
+.idea/
+masto-rocket.zip
+rocketalert-mastodon.tar
+test.py
