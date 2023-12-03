@@ -36,10 +36,11 @@ def handle_sse_events(mastodon_instance):
                     if event.data:
                         data = json.loads(event.data)
                         area_name_en = data.get('areaNameEn', '')
+                        city_name_en = data.get('name', '')
                         timestamp = data.get('timeStamp', '')
 
                         # Create the message text
-                        message_text = f"🚨🚨🚨 Rocket alert in Israel 🚨🚨🚨\n Area Name: {area_name_en}\nTimestamp: " \
+                        message_text = f"🚨🚨🚨 Rocket alert in Israel 🚨🚨🚨\n Town/city: {city_name_en} District Name: {area_name_en}\nTimestamp: " \
                                        f"{timestamp}\n Learn more at https://rocketalert.live"
 
                         # Post the message to Mastodon
