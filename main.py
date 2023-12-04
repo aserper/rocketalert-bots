@@ -2,7 +2,8 @@ import requests
 import json
 from datetime import datetime
 import threading
-from mastodon import Mastodon
+import math
+
 today_date = datetime.now().date()
 formatted_date = today_date.strftime("%Y-%m-%d")
 
@@ -56,8 +57,11 @@ def handle_sse_events():
                                      f"District Name: {area_name_en}\n" \
                                      f"Timestamp: {timestamp}\n\n"
 
-                        # Append the alert to the list
-                        alerts.append(alert_text)
+                        # Split the alert text into multiple posts if it exceeds 500 characters
+                        split_alerts = split_alert_text(alert_text)
+
+                        # Append the split alerts to the list
+                        alerts.extend(split_alerts)
                     except json.JSONDecodeError as e:
                         print(f"Error decoding JSON data: {e}")
                     except Exception as e:
@@ -65,6 +69,20 @@ def handle_sse_events():
 
     except requests.exceptions.RequestException as e:
         print(f"Failed to connect to SSE stream at {sse_url}. Error: {str(e)}")
+
+# Function to split text into multiple posts if it exceeds 500 characters
+def split_alert_text(text):
+    max_length = 500
+    num_parts = math.ceil(len(text) / max_length)
+    split_alerts = []
+
+    for i in range(num_parts):
+        start = i * max_length
+        end = (i + 1) * max_length
+        part_text = text[start:end]
+        split_alerts.append(f"{part_text} (Part {i + 1}/{num_parts})")
+
+    return split_alerts
 
 # Function to post combined alerts to Mastodon
 def post_combined_alerts(mastodon_instance):
