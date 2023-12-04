@@ -39,7 +39,7 @@ def handle_sse_events():
             response.raise_for_status()  # Check for HTTP errors
             print(f"Connected to SSE stream at {sse_url} with status code {response.status_code}.")
 
-            for line in response.iter_lines(decode_unicode=True):
+            for line in response.iter_lines(decode_unicode=True, encoding='utf-8'):
                 if line and line.startswith("data:"):
                     try:
                         # Extract the JSON data after "data:"
