@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import threading
 import math
-
+from mastodon import Mastodon
 today_date = datetime.now().date()
 formatted_date = today_date.strftime("%Y-%m-%d")
 
