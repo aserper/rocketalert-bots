@@ -17,4 +17,4 @@ jobs:
       run: |
         echo "${{ secrets.DH_PASSWORD }}" | docker login -u "amitserper" --password-stdin
         docker build -t amitserper/rocketalert-mastodon .
-        docker push amitserper/rocketalert-mastodon .
+        docker push amitserper/rocketalert-mastodon
