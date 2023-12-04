@@ -1,74 +1,57 @@
 import requests
 import json
-from datetime import datetime
 import threading
 import math
 from mastodon import Mastodon
-today_date = datetime.now().date()
-formatted_date = today_date.strftime("%Y-%m-%d")
 
-# Register your app! This only needs to be done once (per server, or when
-# distributing rather than hosting an application, most likely per device and server).
-# Uncomment the code and substitute in your information:
-print("Program started")
-Mastodon.create_app(
-    'rocketalert',
-    api_base_url='https://mastodon.social',
-    to_file='pytooter_clientcred.secret'
-)
-print("Mastodon connection object created")
-# Then, log in. This can be done every time your application starts (e.g., when writing a
-# simple bot), or you can use the persisted information:
-mastodon = Mastodon(client_id='pytooter_clientcred.secret',)
-mastodon.log_in(
-    'aserper+rocketalert@gmail.com',
-    '!)5oMS@MFJp$vOw4+NAK',
-    to_file='pytooter_usercred.secret'
-)
-print("Logged in")
+
+# Function to fetch SSE events from the given URL
+def fetch_sse_events(url):
+    try:
+        response = requests.get(url, stream=True)
+
+        for line in response.iter_lines(decode_unicode=True):
+            # Remove the "data:" prefix from each line
+            line = line.lstrip("data:")
+
+            if line.strip():  # Check if the line is not empty
+                try:
+                    event_data = json.loads(line)
+                    yield event_data
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}")
+    except Exception as ex:
+        print(f"Error fetching SSE events: {ex}")
+
 
 # List to store alerts
 alerts = []
 
-# Function to handle SSE events and append alerts using requests
-def handle_sse_events():
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
-    headers = {'Accept': 'text/event-stream'}
 
+# Function to handle SSE events and append alerts
+def handle_sse_events(sse_url):
+    global alerts
     try:
-        with requests.get(sse_url, headers=headers, stream=True) as response:
-            response.raise_for_status()  # Check for HTTP errors
-            print(f"Connected to SSE stream at {sse_url} with status code {response.status_code}.")
+        for event_data in fetch_sse_events(sse_url):
+            area_name_en = event_data.get('areaNameEn', '')
+            city_name_he = event_data.get('name', '')
+            city_name_en = event_data.get('englishName', '')
+            timestamp = event_data.get('timeStamp', '')
 
-            for line in response.iter_lines(decode_unicode=True, encoding='utf-8'):
-                if line and line.startswith("data:"):
-                    try:
-                        # Extract the JSON data after "data:"
-                        json_data = line[5:]
-                        data = json.loads(json_data)
+            # Create the alert text
+            alert_text = f"Town/city: {city_name_en}/{city_name_he}\n" \
+                         f"District Name: {area_name_en}\n" \
+                         f"Timestamp: {timestamp}\n\n"
 
-                        area_name_en = data.get('areaNameEn', '')
-                        city_name_he = data.get('name', '')
-                        city_name_en = data.get('englishName', '')
-                        timestamp = data.get('timeStamp', '')
+            # Split the alert text into multiple posts if it exceeds 500 characters
+            split_alerts = split_alert_text(alert_text)
 
-                        # Create the alert text
-                        alert_text = f"Town/city: {city_name_en}/{city_name_he}\n" \
-                                     f"District Name: {area_name_en}\n" \
-                                     f"Timestamp: {timestamp}\n\n"
+            # Append the split alerts to the list
+            alerts.extend(split_alerts)
 
-                        # Split the alert text into multiple posts if it exceeds 500 characters
-                        split_alerts = split_alert_text(alert_text)
+    except Exception as e:
+        print(f"Error processing SSE events: {e}")
 
-                        # Append the split alerts to the list
-                        alerts.extend(split_alerts)
-                    except json.JSONDecodeError as e:
-                        print(f"Error decoding JSON data: {e}")
-                    except Exception as e:
-                        print(f"Error processing SSE event: {e}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to connect to SSE stream at {sse_url}. Error: {str(e)}")
 
 # Function to split text into multiple posts if it exceeds 500 characters
 def split_alert_text(text):
@@ -84,6 +67,7 @@ def split_alert_text(text):
 
     return split_alerts
 
+
 # Function to post combined alerts to Mastodon
 def post_combined_alerts(mastodon_instance):
     global alerts
@@ -91,24 +75,31 @@ def post_combined_alerts(mastodon_instance):
         if alerts:
             # Create a combined message from all alerts
             combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
-                              "Learn more at https://rocketalert.live"
+                               "\nLearn more at https://rocketalert.live"
 
-            # Post the combined message to Mastodon
-            mastodon_instance.toot(combined_message)
+            # Split the combined message into parts no longer than 500 characters
+            max_length = 500
+            message_parts = [combined_message[i:i + max_length] for i in range(0, len(combined_message), max_length)]
 
-            # Log to stdout that the message was posted successfully
-            print("Message posted successfully:\n{0}".format(combined_message))
+            for i, part in enumerate(message_parts):
+                # Post each part as a separate toot
+                mastodon_instance.toot(part)
+                print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
 
             # Clear the alerts list
             alerts = []
 
+
 # Main script
 if __name__ == "__main__":
+    # URL for fetching SSE events
+    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
+
     # Use the persisted Mastodon information to log in
     mastodon_user = Mastodon(access_token='pytooter_usercred.secret')
 
-    # Start a thread to handle SSE events and append alerts using requests
-    sse_thread = threading.Thread(target=handle_sse_events)
+    # Start a thread to handle SSE events and append alerts
+    sse_thread = threading.Thread(target=handle_sse_events, args=(sse_url,))
     sse_thread.daemon = True
     sse_thread.start()
 
