@@ -3,7 +3,6 @@ import json
 from datetime import datetime
 import threading
 from mastodon import Mastodon
-
 today_date = datetime.now().date()
 formatted_date = today_date.strftime("%Y-%m-%d")
 
@@ -41,9 +40,12 @@ def handle_sse_events():
             print(f"Connected to SSE stream at {sse_url} with status code {response.status_code}.")
 
             for line in response.iter_lines(decode_unicode=True):
-                if line:
+                if line and line.startswith("data:"):
                     try:
-                        data = json.loads(line)
+                        # Extract the JSON data after "data:"
+                        json_data = line[5:]
+                        data = json.loads(json_data)
+
                         area_name_en = data.get('areaNameEn', '')
                         city_name_he = data.get('name', '')
                         city_name_en = data.get('englishName', '')
@@ -56,6 +58,8 @@ def handle_sse_events():
 
                         # Append the alert to the list
                         alerts.append(alert_text)
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding JSON data: {e}")
                     except Exception as e:
                         print(f"Error processing SSE event: {e}")
 
