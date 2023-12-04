@@ -1,0 +1,178 @@
+[
+    {
+        "name": "נירים",
+        "englishName": "Nirim",
+        "lat": 31.3357,
+        "lon": 34.3941,
+        "taCityId": 171,
+        "countdownSec": 15,
+        "areaNameHe": "עוטף עזה",
+        "areaNameEn": "Gaza Envelope",
+        "timeStamp": "2023-12-04 16:59:09"
+    },
+    {
+        "name": "עין השלושה",
+        "englishName": "Ein HaShlosha",
+        "lat": 31.3517,
+        "lon": 34.4035,
+        "taCityId": 178,
+        "countdownSec": 15,
+        "areaNameHe": "עוטף עזה",
+        "areaNameEn": "Gaza Envelope",
+        "timeStamp": "2023-12-04 16:59:09"
+    },
+    {
+        "name": "אל פורעה",
+        "englishName": "El For'eh and the Bedouin Diaspora",
+        "lat": 31.2198,
+        "lon": 35.1642,
+        "taCityId": 115,
+        "countdownSec": 90,
+        "areaNameHe": "דרום הנגב",
+        "areaNameEn": "Southern Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "כסייפה",
+        "englishName": "Kuseife and the Bedouin Diaspora",
+        "lat": 31.2347,
+        "lon": 35.0681,
+        "taCityId": 126,
+        "countdownSec": 90,
+        "areaNameHe": "דרום הנגב",
+        "areaNameEn": "Southern Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "אל סייד",
+        "englishName": "AlSayid and the Bedouin Diaspora",
+        "lat": 31.2864,
+        "lon": 34.9079,
+        "taCityId": 1921,
+        "countdownSec": 90,
+        "areaNameHe": "מרכז הנגב",
+        "areaNameEn": "Central Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "נבטים",
+        "englishName": "Nevatim",
+        "lat": 31.2198,
+        "lon": 34.8825,
+        "taCityId": 125,
+        "countdownSec": 90,
+        "areaNameHe": "מרכז הנגב",
+        "areaNameEn": "Central Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "סעייה-מולדה",
+        "englishName": "Sawwa-Mulada",
+        "lat": 31.251,
+        "lon": 34.9528,
+        "taCityId": 137,
+        "countdownSec": 90,
+        "areaNameHe": "דרום הנגב",
+        "areaNameEn": "Southern Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "תל שבע",
+        "englishName": "Tel Sheva",
+        "lat": 31.2476,
+        "lon": 34.8612,
+        "taCityId": 131,
+        "countdownSec": 90,
+        "areaNameHe": "מרכז הנגב",
+        "areaNameEn": "Central Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "אבו תלול",
+        "englishName": "Abu Talul and the Bedouin Diaspora",
+        "lat": 31.1907,
+        "lon": 34.9161,
+        "taCityId": 103,
+        "countdownSec": 90,
+        "areaNameHe": "דרום הנגב",
+        "areaNameEn": "Southern Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "אום בטין",
+        "englishName": "Umm Batin and the Bedouin Diaspora",
+        "lat": 31.2694,
+        "lon": 34.8811,
+        "taCityId": 144,
+        "countdownSec": 90,
+        "areaNameHe": "מרכז הנגב",
+        "areaNameEn": "Central Negev",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "נירים",
+        "englishName": "Nirim",
+        "lat": 31.3357,
+        "lon": 34.3941,
+        "taCityId": 171,
+        "countdownSec": 15,
+        "areaNameHe": "עוטף עזה",
+        "areaNameEn": "Gaza Envelope",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "עין השלושה",
+        "englishName": "Ein HaShlosha",
+        "lat": 31.3517,
+        "lon": 34.4035,
+        "taCityId": 178,
+        "countdownSec": 15,
+        "areaNameHe": "עוטף עזה",
+        "areaNameEn": "Gaza Envelope",
+        "timeStamp": "2023-12-04 16:59:19"
+    },
+    {
+        "name": "חצרים",
+        "englishName": "Hatzerim",
+        "lat": 31.2406,
+        "lon": 34.7174,
+        "taCityId": 139,
+        "countdownSec": 60,
+        "areaNameHe": "מרכז הנגב",
+        "areaNameEn": "Central Negev",
+        "timeStamp": "2023-12-04 16:59:25"
+    },
+    {
+        "name": "אופקים",
+        "englishName": "Ofakim",
+        "lat": 31.3115,
+        "lon": 34.6189,
+        "taCityId": 168,
+        "countdownSec": 60,
+        "areaNameHe": "דרום הנגב",
+        "areaNameEn": "Southern Negev",
+        "timeStamp": "2023-12-04 16:59:25"
+    },
+    {
+        "name": "אבן יהודה",
+        "englishName": "Even Yehuda",
+        "lat": 32.2402,
+        "lon": 34.8534,
+        "taCityId": 154,
+        "countdownSec": 60,
+        "areaNameHe": "שרון",
+        "areaNameEn": "Sharon",
+        "timeStamp": "2023-12-04 16:59:27"
+    },
+    {
+        "name": "צור הדסה",
+        "englishName": "Tzur Hadassah",
+        "lat": 31.7482,
+        "lon": 35.0891,
+        "taCityId": 1030,
+        "countdownSec": 60,
+        "areaNameHe": "ירושלים",
+        "areaNameEn": "Jerusalem",
+        "timeStamp": "2023-12-04 16:59:27"
+    }
+]
