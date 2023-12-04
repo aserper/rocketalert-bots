@@ -1,8 +1,8 @@
-from mastodon import Mastodon
+import requests
 import json
-from sseclient import SSEClient
 from datetime import datetime
 import threading
+from mastodon import Mastodon
 
 today_date = datetime.now().date()
 formatted_date = today_date.strftime("%Y-%m-%d")
@@ -30,16 +30,20 @@ print("Logged in")
 # List to store alerts
 alerts = []
 
-# Function to handle SSE events and append alerts
+# Function to handle SSE events and append alerts using requests
 def handle_sse_events():
     sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"  # Replace with your SSE stream URL
-    client = SSEClient(sse_url)  # Create the SSEClient object
+    headers = {'Accept': 'text/event-stream'}
+
     try:
-        for event in client:
-            if event.event == 'message':
-                try:
-                    if event.data:
-                        data = json.loads(event.data)
+        with requests.get(sse_url, headers=headers, stream=True) as response:
+            response.raise_for_status()  # Check for HTTP errors
+            print(f"Connected to SSE stream at {sse_url} with status code {response.status_code}.")
+
+            for line in response.iter_lines(decode_unicode=True):
+                if line:
+                    try:
+                        data = json.loads(line)
                         area_name_en = data.get('areaNameEn', '')
                         city_name_he = data.get('name', '')
                         city_name_en = data.get('englishName', '')
@@ -52,10 +56,11 @@ def handle_sse_events():
 
                         # Append the alert to the list
                         alerts.append(alert_text)
-                except Exception as e:
-                    print(f"Error processing SSE event: {e}")
-    finally:
-        client.close()  # Close the SSEClient when done
+                    except Exception as e:
+                        print(f"Error processing SSE event: {e}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to connect to SSE stream at {sse_url}. Error: {str(e)}")
 
 # Function to post combined alerts to Mastodon
 def post_combined_alerts(mastodon_instance):
@@ -80,7 +85,7 @@ if __name__ == "__main__":
     # Use the persisted Mastodon information to log in
     mastodon_user = Mastodon(access_token='pytooter_usercred.secret')
 
-    # Start a thread to handle SSE events and append alerts
+    # Start a thread to handle SSE events and append alerts using requests
     sse_thread = threading.Thread(target=handle_sse_events)
     sse_thread.daemon = True
     sse_thread.start()
