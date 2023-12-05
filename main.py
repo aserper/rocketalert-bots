@@ -8,7 +8,7 @@ import os
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
-masto_clientsecret = os.environ['MASTO_CLIENT_SECRET']
+masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
     try:
