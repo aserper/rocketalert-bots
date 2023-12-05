@@ -3,8 +3,12 @@ import json
 import threading
 import math
 from mastodon import Mastodon
+import os
 
-
+masto_user = os.environ['MASTO_USER']
+masto_password = os.environ['MASTO_PASSWORD']
+masto_clientid = os.environ['MASTO_CLIENTID']
+masto_clientsecret = os.environ['MASTO_CLIENT_SECRET']
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
     try:
@@ -69,8 +73,17 @@ def split_alert_text(text):
 
 
 # Function to post combined alerts to Mastodon
-def post_combined_alerts(mastodon_instance):
+def post_combined_alerts(username, password):
     global alerts
+    mastodon_instance = Mastodon(
+        api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
+        client_id= masto_clientid,  # Replace with your Mastodon client ID
+        client_secret= masto_clientsecret,  # Replace with your Mastodon client secret
+    )
+
+    # Log in with username and password
+    mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
+
     while True:
         if alerts:
             # Create a combined message from all alerts
@@ -93,10 +106,7 @@ def post_combined_alerts(mastodon_instance):
 # Main script
 if __name__ == "__main__":
     # URL for fetching SSE events
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
-
-    # Use the persisted Mastodon information to log in
-    mastodon_user = Mastodon(access_token='pytooter_usercred.secret')
+    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"
 
     # Start a thread to handle SSE events and append alerts
     sse_thread = threading.Thread(target=handle_sse_events, args=(sse_url,))
@@ -104,7 +114,7 @@ if __name__ == "__main__":
     sse_thread.start()
 
     # Start a thread to post combined alerts to Mastodon
-    post_thread = threading.Thread(target=post_combined_alerts, args=(mastodon_user,))
+    post_thread = threading.Thread(target=post_combined_alerts, args=(masto_user, masto_password))
     post_thread.daemon = True
     post_thread.start()
 
