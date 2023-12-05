@@ -1,18 +1,21 @@
-import requests
 import json
+import os
 import threading
 import math
+import requests
 from mastodon import Mastodon
-import os
+
 
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 # Function to fetch SSE events from the given URL
+
+
 def fetch_sse_events(url):
     try:
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, timeout=120)
 
         for line in response.iter_lines(decode_unicode=True):
             # Remove the "data:" prefix from each line
@@ -77,8 +80,8 @@ def post_combined_alerts(username, password):
     global alerts
     mastodon_instance = Mastodon(
         api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
-        client_id= masto_clientid,  # Replace with your Mastodon client ID
-        client_secret= masto_clientsecret,  # Replace with your Mastodon client secret
+        client_id=masto_clientid,  # Replace with your Mastodon client ID
+        client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
     )
 
     # Log in with username and password
@@ -92,7 +95,8 @@ def post_combined_alerts(username, password):
 
             # Split the combined message into parts no longer than 500 characters
             max_length = 500
-            message_parts = [combined_message[i:i + max_length] for i in range(0, len(combined_message), max_length)]
+            message_parts = [combined_message[i:i + max_length] \
+                             for i in range(0, len(combined_message), max_length)]
 
             for i, part in enumerate(message_parts):
                 # Post each part as a separate toot
@@ -106,10 +110,10 @@ def post_combined_alerts(username, password):
 # Main script
 if __name__ == "__main__":
     # URL for fetching SSE events
-    sse_url = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
+    SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
 
     # Start a thread to handle SSE events and append alerts
-    sse_thread = threading.Thread(target=handle_sse_events, args=(sse_url,))
+    sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
     sse_thread.daemon = True
     sse_thread.start()
 
