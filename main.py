@@ -5,7 +5,7 @@ import math
 import requests
 from mastodon import Mastodon
 
-
+print("Program started")
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
@@ -15,11 +15,13 @@ masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 
 def fetch_sse_events(url):
     try:
-        response = requests.get(url, stream=True, timeout=120)
+        print("Opening SSE connection to fetch events")
+        response = requests.get(url, stream=True)
 
         for line in response.iter_lines(decode_unicode=True):
             # Remove the "data:" prefix from each line
             line = line.lstrip("data:")
+            print("Got event")
 
             if line.strip():  # Check if the line is not empty
                 try:
