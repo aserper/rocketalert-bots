@@ -10,9 +10,11 @@ masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
+
+# Lock for synchronization
+alerts_lock = threading.Lock()
+
 # Function to fetch SSE events from the given URL
-
-
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
@@ -33,10 +35,8 @@ def fetch_sse_events(url):
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
 
-
 # List to store alerts
 alerts = []
-
 
 # Function to handle SSE events and append alerts
 def handle_sse_events(sse_url):
@@ -56,12 +56,12 @@ def handle_sse_events(sse_url):
             # Split the alert text into multiple posts if it exceeds 500 characters
             split_alerts = split_alert_text(alert_text)
 
-            # Append the split alerts to the list
-            alerts.extend(split_alerts)
+            with alerts_lock:
+                # Append the split alerts to the list
+                alerts.extend(split_alerts)
 
     except Exception as e:
         print(f"Error processing SSE events: {e}")
-
 
 # Function to split text into multiple posts if it exceeds 500 characters
 def split_alert_text(text):
@@ -77,7 +77,6 @@ def split_alert_text(text):
 
     return split_alerts
 
-
 # Function to post combined alerts to Mastodon
 def post_combined_alerts(username, password):
     global alerts
@@ -92,23 +91,23 @@ def post_combined_alerts(username, password):
 
     while True:
         if alerts:
-            # Create a combined message from all alerts
-            combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
-                               "\nLearn more at https://rocketalert.live"
+            with alerts_lock:
+                # Create a combined message from all alerts
+                combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
+                                "\nLearn more at https://rocketalert.live"
 
-            # Split the combined message into parts no longer than 500 characters
-            max_length = 500
-            message_parts = [combined_message[i:i + max_length] \
-                             for i in range(0, len(combined_message), max_length)]
+                # Split the combined message into parts no longer than 500 characters
+                max_length = 500
+                message_parts = [combined_message[i:i + max_length] \
+                                for i in range(0, len(combined_message), max_length)]
 
-            for i, part in enumerate(message_parts):
-                # Post each part as a separate toot
-                mastodon_instance.toot(part)
-                print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
+                for i, part in enumerate(message_parts):
+                    # Post each part as a separate toot
+                    mastodon_instance.toot(part)
+                    print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
 
-            # Clear the alerts list
-            alerts = []
-
+                # Clear the alerts list
+                alerts = []
 
 # Main script
 if __name__ == "__main__":
