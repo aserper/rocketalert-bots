@@ -73,7 +73,7 @@ def split_alert_text(text):
         start = i * max_length
         end = (i + 1) * max_length
         part_text = text[start:end]
-        split_alerts.append(f"{part_text} (Part {i + 1}/{num_parts})")
+        split_alerts.append(f"{part_text}")
 
     return split_alerts
 
