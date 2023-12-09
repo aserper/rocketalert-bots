@@ -4,7 +4,6 @@ import threading
 import math
 import requests
 from mastodon import Mastodon
-import queue
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -14,9 +13,6 @@ masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
-
-# Create a thread-safe queue to buffer incoming events
-event_queue = queue.Queue()
 
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
@@ -39,8 +35,12 @@ def fetch_sse_events(url):
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
 
-# Function to handle SSE events and append them to the queue
+# List to store alerts
+alerts = []
+
+# Function to handle SSE events and append alerts
 def handle_sse_events(sse_url):
+    global alerts
     try:
         for event_data in fetch_sse_events(sse_url):
             area_name_en = event_data.get('areaNameEn', '')
@@ -57,8 +57,8 @@ def handle_sse_events(sse_url):
             split_alerts = split_alert_text(alert_text)
 
             with alerts_lock:
-                # Append the split alerts to the queue
-                event_queue.put(split_alerts)
+                # Append the split alerts to the list
+                alerts.extend(split_alerts)
 
     except Exception as e:
         print(f"Error processing SSE events: {e}")
@@ -77,8 +77,8 @@ def split_alert_text(text):
 
     return split_alerts
 
-# Function to process events from the queue and post them to Mastodon
-def process_events_from_queue(username, password):
+# Function to post combined alerts to Mastodon
+def post_combined_alerts(username, password):
     global alerts
     mastodon_instance = Mastodon(
         api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
@@ -90,11 +90,8 @@ def process_events_from_queue(username, password):
     mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
 
     while True:
-        try:
-            # Get events from the queue
-            alerts = event_queue.get()
-
-            if alerts:
+        if alerts:
+            with alerts_lock:
                 # Create a combined message from all alerts
                 combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
                                 "\nLearn more at https://rocketalert.live"
@@ -112,23 +109,20 @@ def process_events_from_queue(username, password):
                 # Clear the alerts list
                 alerts = []
 
-        except Exception as e:
-            print(f"Error processing events from the queue: {e}")
-
 # Main script
 if __name__ == "__main__":
     # URL for fetching SSE events
     SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
 
-    # Start a thread to handle SSE events and append events to the queue
+    # Start a thread to handle SSE events and append alerts
     sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
     sse_thread.daemon = True
     sse_thread.start()
 
-    # Start a thread to process events from the queue and post to Mastodon
-    process_thread = threading.Thread(target=process_events_from_queue, args=(masto_user, masto_password))
-    process_thread.daemon = True
-    process_thread.start()
+    # Start a thread to post combined alerts to Mastodon
+    post_thread = threading.Thread(target=post_combined_alerts, args=(masto_user, masto_password))
+    post_thread.daemon = True
+    post_thread.start()
 
     # Keep the main thread running
     try:
