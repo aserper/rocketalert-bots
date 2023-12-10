@@ -1,3 +1,4 @@
 requests
 mastodon.py
 sseclient
+schedule
