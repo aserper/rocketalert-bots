@@ -17,9 +17,6 @@ masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 # Lock for synchronization
 alerts_lock = threading.Lock()
 
-# Lock for synchronization
-alerts_lock = threading.Lock()
-
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
     try:
