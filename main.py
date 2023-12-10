@@ -112,7 +112,7 @@ def post_combined_alerts(username, password):
 # Main script
 if __name__ == "__main__":
     # URL for fetching SSE events
-    SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"
+    SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
 
     # Start a thread to handle SSE events and append alerts
     sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
