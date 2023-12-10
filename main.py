@@ -15,6 +15,9 @@ masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 
+# Lock for synchronization
+alerts_lock = threading.Lock()
+
 
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
@@ -60,8 +63,9 @@ def handle_sse_events(sse_url):
             # Split the alert text into multiple posts if it exceeds 500 characters
             split_alerts = split_alert_text(alert_text)
 
-            # Append the split alerts to the list
-            alerts.extend(split_alerts)
+            with alerts_lock:
+                # Append the split alerts to the list
+                alerts.extend(split_alerts)
 
     except Exception as e:
         print(f"Error processing SSE events: {e}")
@@ -77,7 +81,7 @@ def split_alert_text(text):
         start = i * max_length
         end = (i + 1) * max_length
         part_text = text[start:end]
-        split_alerts.append(f"{part_text} (Part {i + 1}/{num_parts})")
+        split_alerts.append(f"{part_text}")
 
     return split_alerts
 
@@ -96,22 +100,23 @@ def post_combined_alerts(username, password):
 
     while True:
         if alerts:
-            # Create a combined message from all alerts
-            combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
-                               "\nLearn more at https://rocketalert.live"
+            with alerts_lock:
+                # Create a combined message from all alerts
+                combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
+                                "\nLearn more at https://rocketalert.live"
 
-            # Split the combined message into parts no longer than 500 characters
-            max_length = 500
-            message_parts = [combined_message[i:i + max_length] \
-                             for i in range(0, len(combined_message), max_length)]
+                # Split the combined message into parts no longer than 500 characters
+                max_length = 500
+                message_parts = [combined_message[i:i + max_length] \
+                                for i in range(0, len(combined_message), max_length)]
 
-            for i, part in enumerate(message_parts):
-                # Post each part as a separate toot
-                mastodon_instance.toot(part)
-                print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
+                for i, part in enumerate(message_parts):
+                    # Post each part as a separate toot
+                    mastodon_instance.toot(part)
+                    print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
 
-            # Clear the alerts list
-            alerts = []
+                # Clear the alerts list
+                alerts = []
 
 
 # Function receives date as string in YYYY-MM-DD format and returns number of rockets that day, if no date entered it
@@ -171,6 +176,7 @@ if __name__ == "__main__":
     # Keep the main thread running
     try:
         while True:
+            # Keep scheduled jobs running
             schedule.run_pending()
             pass
     except KeyboardInterrupt:
