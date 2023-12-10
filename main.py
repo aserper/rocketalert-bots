@@ -151,9 +151,8 @@ def post_daily_summary(username, password):
     # Post daily total onto Mastodon
     mastodon_instance.toot(daily_message)
     print(f"Daily total posted to {username}")
-
-                # Clear the alerts list
-                alerts = []
+# Clear the alerts list
+    alerts = []
 
 # Main script
 if __name__ == "__main__":
