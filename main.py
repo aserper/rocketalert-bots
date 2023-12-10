@@ -4,15 +4,19 @@ import threading
 import math
 import requests
 from mastodon import Mastodon
+import datetime
+from datetime import date
+import schedule
+import time
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
+
+
 # Function to fetch SSE events from the given URL
-
-
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
@@ -110,6 +114,42 @@ def post_combined_alerts(username, password):
             alerts = []
 
 
+# Function receives date as string in YYYY-MM-DD format and returns number of rockets that day, if no date entered it
+# defaults to today's date
+def alert_daily_total(day=str(date.today())):
+    url = f"https://ra-agg.kipodopik.com/api/v1/alerts/total?from={day}&to={day}"
+    response = requests.get(url).json()
+    print("Fetching daily total")
+    if response["success"]:
+        print("Daily total fetched")
+        return response["payload"]
+    else:
+        print(f"Something went wrong, Error:{response['error']}")
+        print("Please note the function only takes dates in string format (YYYY-MM-DD)")
+
+
+# Function to post daily summary of alerts to Mastodon on 23:55 each day
+def post_daily_summary(username, password):
+    print(f"Attempting to post daily total to {username}")
+    mastodon_instance = Mastodon(
+        api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
+        client_id=masto_clientid,  # Replace with your Mastodon client ID
+        client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
+    )
+
+    # Log in with username and password
+    mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
+
+    # Pull daily total from alert_daily_total function and prepare daily post
+    daily_total = alert_daily_total()
+    daily_message = (f"🚨 Daily Summary, {date.today()}: 🚨\n\nTotal number of rockets fired into Israel: {daily_total}"
+                     f"\n\nLearn more at https://rocketalert.live")
+
+    # Post daily total onto Mastodon
+    mastodon_instance.toot(daily_message)
+    print(f"Daily total posted to {username}")
+
+
 # Main script
 if __name__ == "__main__":
     # URL for fetching SSE events
@@ -125,9 +165,13 @@ if __name__ == "__main__":
     post_thread.daemon = True
     post_thread.start()
 
+    # Checking and run daily summary at appropriate time
+    schedule.every().day.at("17:55").do(post_daily_summary, username=masto_user, password=masto_password)
+
     # Keep the main thread running
     try:
         while True:
+            schedule.run_pending()
             pass
     except KeyboardInterrupt:
         print("Program terminated")
