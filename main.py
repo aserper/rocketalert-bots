@@ -18,6 +18,8 @@ masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 # Lock for synchronization
 alerts_lock = threading.Lock()
 
+# Lock for synchronization
+alerts_lock = threading.Lock()
 
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
@@ -40,10 +42,8 @@ def fetch_sse_events(url):
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
 
-
 # List to store alerts
 alerts = []
-
 
 # Function to handle SSE events and append alerts
 def handle_sse_events(sse_url):
@@ -70,7 +70,6 @@ def handle_sse_events(sse_url):
     except Exception as e:
         print(f"Error processing SSE events: {e}")
 
-
 # Function to split text into multiple posts if it exceeds 500 characters
 def split_alert_text(text):
     max_length = 500
@@ -84,7 +83,6 @@ def split_alert_text(text):
         split_alerts.append(f"{part_text}")
 
     return split_alerts
-
 
 # Function to post combined alerts to Mastodon
 def post_combined_alerts(username, password):
@@ -104,6 +102,7 @@ def post_combined_alerts(username, password):
                 # Create a combined message from all alerts
                 combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
                                 "\nLearn more at https://rocketalert.live"
+
 
                 # Split the combined message into parts no longer than 500 characters
                 max_length = 500
@@ -154,6 +153,8 @@ def post_daily_summary(username, password):
     mastodon_instance.toot(daily_message)
     print(f"Daily total posted to {username}")
 
+                # Clear the alerts list
+                alerts = []
 
 # Main script
 if __name__ == "__main__":
