@@ -1,4 +1,3 @@
 requests
 mastodon.py
-main
 schedule
