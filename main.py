@@ -4,7 +4,6 @@ import threading
 import math
 import requests
 from mastodon import Mastodon
-import datetime
 from datetime import date
 import schedule
 import time
