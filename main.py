@@ -96,7 +96,7 @@ def post_combined_alerts(username, password):
         if alerts:
             with alerts_lock:
                 # Create a combined message from all alerts
-                combined_message = "🚨🚨🚨 Rocket alerts in Israel 🚨🚨🚨\n\n" + "\n".join(alerts) + \
+                combined_message = "🚨🚀🚨 Rocket alerts in Israel 🚨🚀🚨\n\n" + "\n".join(alerts) + \
                                 "\nLearn more at https://rocketalert.live"
 
 
@@ -142,8 +142,8 @@ def post_daily_summary(username, password):
 
     # Pull daily total from alert_daily_total function and prepare daily post
     daily_total = alert_daily_total()
-    daily_message = (f"🚨 Daily Summary, {date.today()}: 🚨\n\nTotal number of rockets fired into Israel: {daily_total}"
-                     f"\n\nLearn more at https://rocketalert.live")
+    daily_message = (f"📢 Daily Summary, {date.today()}: 📢\n\nTotal number of rockets fired into Israel: {daily_total}"
+                     f"\n\nLearn more at https://rocketalert.live 🚀")
 
     # Post daily total onto Mastodon
     mastodon_instance.toot(daily_message)
