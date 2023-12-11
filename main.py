@@ -167,7 +167,7 @@ if __name__ == "__main__":
     post_thread.start()
 
     # Checking and run daily summary at appropriate time
-    schedule.every().day.at("19:01").do(post_daily_summary, username=masto_user, password=masto_password)
+    schedule.every().day.at("19:35").do(post_daily_summary, username=masto_user, password=masto_password)
 
     # Keep the main thread running
     try:
