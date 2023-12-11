@@ -27,7 +27,7 @@ def fetch_sse_events(url):
         for line in response.iter_lines(decode_unicode=True):
             # Remove the "data:" prefix from each line
             line = line.lstrip("data:")
-            print("Got event")
+            print(f"Got event: {line}")
 
             if line.strip():  # Check if the line is not empty
                 try:
