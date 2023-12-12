@@ -54,7 +54,7 @@ def handle_sse_events(sse_url):
             # Create the alert text
             alert_text = f"Town/city: {city_name_en}/{city_name_he}\n" \
                          f"District Name: {area_name_en}\n" \
-                         f"Timestamp: {timestamp}\n\n"
+                         f"Local time in Israel: {timestamp}\n\n"
 
             # Split the alert text into multiple posts if it exceeds 500 characters
             split_alerts = split_alert_text(alert_text)
