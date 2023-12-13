@@ -8,6 +8,7 @@ from datetime import date
 import schedule
 import time
 
+
 print("Program started")
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
