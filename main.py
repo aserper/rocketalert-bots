@@ -14,6 +14,7 @@ masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
+masto_api_baseurl = us.environ['MASTO_BASEURL']
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
@@ -85,7 +86,7 @@ def split_alert_text(text):
 def post_combined_alerts(username, password):
     global alerts
     mastodon_instance = Mastodon(
-        api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
+        api_base_url=masto_api_baseurl,  # Replace with your Mastodon instance URL
         client_id=masto_clientid,  # Replace with your Mastodon client ID
         client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
     )
@@ -133,7 +134,7 @@ def alert_daily_total(day=str(date.today())):
 def post_daily_summary(username, password):
     print(f"Attempting to post daily total to {username}")
     mastodon_instance = Mastodon(
-        api_base_url='https://mastodon.social',  # Replace with your Mastodon instance URL
+        api_base_url=masto_api_baseurl,  # Replace with your Mastodon instance URL
         client_id=masto_clientid,  # Replace with your Mastodon client ID
         client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
     )
