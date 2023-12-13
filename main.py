@@ -14,7 +14,7 @@ masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
-masto_api_baseurl = us.environ['MASTO_BASEURL']
+masto_api_baseurl = os.environ['MASTO_BASEURL']
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
