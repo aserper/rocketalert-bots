@@ -151,6 +151,6 @@ if __name__ == "__main__":
     try:
         while True:
             schedule.run_pending()
-#            sleep(1)  # Sleep to reduce CPU usage
+            sleep(1)  # Sleep to reduce CPU usage
     except KeyboardInterrupt:
         print("Program terminated")
