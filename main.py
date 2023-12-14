@@ -23,7 +23,7 @@ alerts_lock = threading.Lock()
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, timeout=120)
         response.encoding = 'utf-8'
 
         for line in response.iter_lines(decode_unicode=True):
