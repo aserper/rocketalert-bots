@@ -6,7 +6,7 @@ import requests
 from mastodon import Mastodon
 from datetime import date
 import schedule
-import time
+from time import sleep
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -169,6 +169,8 @@ if __name__ == "__main__":
     try:
         while True:
             # Keep scheduled jobs running
+            # add one second sleep to mitigate high cpu usage
+            sleep(1)
             schedule.run_pending()
             pass
     except KeyboardInterrupt:
