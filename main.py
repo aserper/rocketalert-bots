@@ -8,7 +8,6 @@ from datetime import date
 import schedule
 import time
 
-
 print("Program started")
 masto_user = os.environ['MASTO_USER']
 masto_password = os.environ['MASTO_PASSWORD']
@@ -101,7 +100,6 @@ def post_combined_alerts(username, password):
                 combined_message = "🚨🚀🚨 Rocket alerts in Israel 🚨🚀🚨\n\n" + "\n".join(alerts) + \
                                 "\nLearn more at https://rocketalert.live"
 
-
                 # Split the combined message into parts no longer than 500 characters
                 max_length = 500
                 message_parts = [combined_message[i:i + max_length] \
@@ -115,7 +113,6 @@ def post_combined_alerts(username, password):
                 # Clear the alerts list
                 alerts = []
 
-
 # Function receives date as string in YYYY-MM-DD format and returns number of rockets that day, if no date entered it
 # defaults to today's date
 def alert_daily_total(day=str(date.today())):
@@ -128,7 +125,6 @@ def alert_daily_total(day=str(date.today())):
     else:
         print(f"Something went wrong, Error:{response['error']}")
         print("Please note the function only takes dates in string format (YYYY-MM-DD)")
-
 
 # Function to post daily summary of alerts to Mastodon on 23:55 each day
 def post_daily_summary(username, password):
@@ -150,8 +146,6 @@ def post_daily_summary(username, password):
     # Post daily total onto Mastodon
     mastodon_instance.toot(daily_message)
     print(f"Daily total posted to {username}")
-# Clear the alerts list
-    alerts = []
 
 # Main script
 if __name__ == "__main__":
@@ -169,7 +163,7 @@ if __name__ == "__main__":
     post_thread.start()
 
     # Checking and run daily summary at appropriate time
-    schedule.every().day.at("16:58").do(post_daily_summary, username=masto_user, password=masto_password)
+    schedule.every().day.at("23:55").do(post_daily_summary, username=masto_user, password=masto_password)
 
     # Keep the main thread running
     try:
