@@ -171,7 +171,7 @@ if __name__ == "__main__":
             # Keep scheduled jobs running
             schedule.run_pending()
             # add one second sleep to mitigate high cpu usage
-            sleep(1)
+            sleep(5)
             pass
     except KeyboardInterrupt:
         print("Program terminated")
