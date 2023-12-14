@@ -146,7 +146,7 @@ if __name__ == "__main__":
     post_thread.daemon = True
     post_thread.start()
 
-    schedule.every().day.at("18:50").do(post_daily_summary, username=masto_user, password=masto_password)
+    schedule.every().day.at("16:55").do(post_daily_summary, username=masto_user, password=masto_password)
 
     try:
         while True:
