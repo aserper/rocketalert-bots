@@ -26,7 +26,6 @@ def fetch_sse_events(url):
         response.encoding = 'utf-8'
 
         for line in response.iter_lines(decode_unicode=True):
-            # Remove the "data:" prefix from each line
             line = line.lstrip("data:")
             print(f"Got event: {line}")
 
@@ -52,16 +51,13 @@ def handle_sse_events(sse_url):
             city_name_en = event_data.get('englishName', '')
             timestamp = event_data.get('timeStamp', '')
 
-            # Create the alert text
             alert_text = f"Town/city: {city_name_en}/{city_name_he}\n" \
                          f"District Name: {area_name_en}\n" \
                          f"Local time in Israel: {timestamp}\n\n"
 
-            # Split the alert text into multiple posts if it exceeds 500 characters
             split_alerts = split_alert_text(alert_text)
 
             with alerts_lock:
-                # Append the split alerts to the list
                 alerts.extend(split_alerts)
 
     except Exception as e:
@@ -85,36 +81,30 @@ def split_alert_text(text):
 def post_combined_alerts(username, password):
     global alerts
     mastodon_instance = Mastodon(
-        api_base_url=masto_api_baseurl,  # Replace with your Mastodon instance URL
-        client_id=masto_clientid,  # Replace with your Mastodon client ID
-        client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
+        api_base_url=masto_api_baseurl,
+        client_id=masto_clientid,
+        client_secret=masto_clientsecret,
     )
 
-    # Log in with username and password
     mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
 
     while True:
         if alerts:
             with alerts_lock:
-                # Create a combined message from all alerts
                 combined_message = "🚨🚀🚨 Rocket alerts in Israel 🚨🚀🚨\n\n" + "\n".join(alerts) + \
-                                "\nLearn more at https://rocketalert.live"
-
-                # Split the combined message into parts no longer than 500 characters
+                                   "\nLearn more at https://rocketalert.live"
                 max_length = 500
-                message_parts = [combined_message[i:i + max_length] \
-                                for i in range(0, len(combined_message), max_length)]
+                message_parts = [combined_message[i:i + max_length] for i in range(0, len(combined_message), max_length)]
 
                 for i, part in enumerate(message_parts):
-                    # Post each part as a separate toot
                     mastodon_instance.toot(part)
                     print(f"Part {i + 1}/{len(message_parts)} posted successfully:\n{part}")
 
-                # Clear the alerts list
                 alerts = []
 
-# Function receives date as string in YYYY-MM-DD format and returns number of rockets that day, if no date entered it
-# defaults to today's date
+        sleep(1)  # Sleep to reduce CPU usage
+
+# Function to get daily total of alerts
 def alert_daily_total(day=str(date.today())):
     url = f"https://ra-agg.kipodopik.com/api/v1/alerts/total?from={day}&to={day}"
     response = requests.get(url).json()
@@ -126,52 +116,41 @@ def alert_daily_total(day=str(date.today())):
         print(f"Something went wrong, Error:{response['error']}")
         print("Please note the function only takes dates in string format (YYYY-MM-DD)")
 
-# Function to post daily summary of alerts to Mastodon on 23:55 each day
+# Function to post daily summary of alerts to Mastodon
 def post_daily_summary(username, password):
     print(f"Attempting to post daily total to {username}")
     mastodon_instance = Mastodon(
-        api_base_url=masto_api_baseurl,  # Replace with your Mastodon instance URL
-        client_id=masto_clientid,  # Replace with your Mastodon client ID
-        client_secret=masto_clientsecret,  # Replace with your Mastodon client secret
+        api_base_url=masto_api_baseurl,
+        client_id=masto_clientid,
+        client_secret=masto_clientsecret,
     )
 
-    # Log in with username and password
     mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
 
-    # Pull daily total from alert_daily_total function and prepare daily post
     daily_total = alert_daily_total()
-    daily_message = (f"📢 Daily Summary, {date.today()}: 📢\n\nTotal number of rockets fired into Israel: {daily_total}"
-                     f"\n\nLearn more at https://rocketalert.live 🚀")
+    daily_message = f"📢 Daily Summary, {date.today()}: 📢\n\nTotal number of rockets fired into Israel: {daily_total}" \
+                    f"\n\nLearn more at https://rocketalert.live"
 
-    # Post daily total onto Mastodon
     mastodon_instance.toot(daily_message)
     print(f"Daily total posted to {username}")
 
 # Main script
 if __name__ == "__main__":
-    # URL for fetching SSE events
     SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
 
-    # Start a thread to handle SSE events and append alerts
     sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
     sse_thread.daemon = True
     sse_thread.start()
 
-    # Start a thread to post combined alerts to Mastodon
     post_thread = threading.Thread(target=post_combined_alerts, args=(masto_user, masto_password))
     post_thread.daemon = True
     post_thread.start()
 
-    # Checking and run daily summary at appropriate time
     schedule.every().day.at("23:55").do(post_daily_summary, username=masto_user, password=masto_password)
 
-    # Keep the main thread running
     try:
         while True:
-            # Keep scheduled jobs running
             schedule.run_pending()
-            # add one second sleep to mitigate high cpu usage
-            sleep(1)
-            pass
+            sleep(1)  # Sleep to reduce CPU usage
     except KeyboardInterrupt:
         print("Program terminated")
