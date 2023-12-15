@@ -136,7 +136,7 @@ def post_daily_summary(username, password):
 
 # Main script
 if __name__ == "__main__":
-    SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time"
+    SSL_URL = "https://ra-agg.kipodopik.com/api/v1/alerts/real-time-test"
 
     sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
     sse_thread.daemon = True
