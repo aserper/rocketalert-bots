@@ -128,7 +128,7 @@ def post_daily_summary(username, password):
     mastodon_instance.log_in(username=username, password=password, scopes=['read', 'write'])
 
     daily_total = alert_daily_total()
-    daily_message = f"📢 Daily Summary, {date.today()}: 📢\n\nTotal number of rockets fired into Israel: {daily_total}" \
+    daily_message = f"📢 Daily Summary, {date.today()}: 📢\n\nTotal number of rockets fired into Israel today: {daily_total}" \
                     f"\n\nLearn more at https://rocketalert.live"
 
     mastodon_instance.toot(daily_message)
