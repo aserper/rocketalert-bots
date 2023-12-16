@@ -16,7 +16,7 @@ masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 masto_api_baseurl = os.environ['MASTO_BASEURL']
 custom_header_key = os.environ['CUSTOM_HEADER_KEY']
 custom_header_value = os.environ['CUSTOM_HEADER_VALUE']
-headers = {custom_header_key:custom_header_value}
+headers = {custom_header_key:custom_header_value, "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"}
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
