@@ -14,6 +14,9 @@ masto_password = os.environ['MASTO_PASSWORD']
 masto_clientid = os.environ['MASTO_CLIENTID']
 masto_clientsecret = os.environ['MASTO_CLIENTSECRET']
 masto_api_baseurl = os.environ['MASTO_BASEURL']
+custom_header_key = os.environ['CUSTOM_HEADER_KEY']
+custom_header_value = os.environ['CUSTOM_HEADER_VALUE']
+headers = {custom_header_key:custom_header_value}
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
@@ -22,7 +25,7 @@ alerts_lock = threading.Lock()
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True,headers=headers)
         response.encoding = 'utf-8'
 
         for line in response.iter_lines(decode_unicode=True):
@@ -107,7 +110,7 @@ def post_combined_alerts(username, password):
 # Function to get daily total of alerts
 def alert_daily_total(day=str(date.today())):
     url = f"https://ra-agg.kpd.one/api/v1/alerts/total?from={day}&to={day}"
-    response = requests.get(url).json()
+    response = requests.get(url,headers=headers).json()
     print("Fetching daily total")
     if response["success"]:
         print("Daily total fetched")
