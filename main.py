@@ -17,7 +17,7 @@ masto_api_baseurl = os.environ['MASTO_BASEURL']
 custom_header_key = os.environ['CUSTOM_HEADER_KEY']
 custom_header_value = os.environ['CUSTOM_HEADER_VALUE']
 headers = {
-    custom_header_key:custom_header_value, "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+    custom_header_key:custom_header_value, "user-agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
     }
 
 # Lock for synchronization
