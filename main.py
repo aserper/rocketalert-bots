@@ -7,6 +7,7 @@ from mastodon import Mastodon
 from datetime import date
 import schedule
 from time import sleep
+import sys
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -45,7 +46,7 @@ def fetch_sse_events(url):
                     print(f"Error decoding JSON: {e}")
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
-        exit(1)
+        sys.exit()
 
 # List to store alerts
 alerts = []
