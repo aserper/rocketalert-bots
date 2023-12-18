@@ -37,7 +37,10 @@ def fetch_sse_events(url):
             if line.strip():  # Check if the line is not empty
                 try:
                     event_data = json.loads(line)
-                    yield event_data
+                    if "KEEP_ALIVE" in event_data.get('name',''): # Keepalive check to please CF
+                        print("DEBUG: Received Keep alive")
+                    else:
+                        yield event_data
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON: {e}")
     except Exception as ex:
