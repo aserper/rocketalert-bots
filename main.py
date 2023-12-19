@@ -19,8 +19,9 @@ masto_api_baseurl = os.environ['MASTO_BASEURL']
 custom_header_key = os.environ['CUSTOM_HEADER_KEY']
 custom_header_value = os.environ['CUSTOM_HEADER_VALUE']
 headers = {
-    custom_header_key : custom_header_value,"user-agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
-    }
+    custom_header_key: custom_header_value,
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+}
 
 # Lock for synchronization
 alerts_lock = threading.Lock()
@@ -29,7 +30,7 @@ alerts_lock = threading.Lock()
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
-        response = requests.get(url, stream=True,headers=headers)
+        response = requests.get(url, stream=True, headers=headers)
         response.encoding = 'utf-8'
 
         for line in response.iter_lines(decode_unicode=True):
@@ -39,19 +40,14 @@ def fetch_sse_events(url):
             if line.strip():  # Check if the line is not empty
                 try:
                     event_data = json.loads(line)
-                    if "KEEP_ALIVE" in event_data.get('name',''): # Keepalive check to please CF
+                    if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
                         print("DEBUG: Received Keep alive")
-                    elif "InvalidChunkLength" in event_data.get('Connection broken'):
-                        os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
                     else:
                         yield event_data
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON: {e}")
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
-        os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
-        sys.exit(1)
-        print("If you see this line that something is wrong and the program didn't bail")
 
 # List to store alerts
 alerts = []
@@ -61,6 +57,9 @@ def handle_sse_events(sse_url):
     global alerts
     try:
         for event_data in fetch_sse_events(sse_url):
+            if event_data is None:
+                continue  # Skip None responses
+
             area_name_en = event_data.get('areaNameEn', '')
             city_name_he = event_data.get('name', '')
             city_name_en = event_data.get('englishName', '')
@@ -122,7 +121,7 @@ def post_combined_alerts(username, password):
 # Function to get daily total of alerts
 def alert_daily_total(day=str(date.today())):
     url = f"https://agg.rocketalert.live/api/v1/alerts/total?from={day}&to={day}"
-    response = requests.get(url,headers=headers).json()
+    response = requests.get(url, headers=headers).json()
     print("Fetching daily total")
     if response["success"]:
         print("Daily total fetched")
