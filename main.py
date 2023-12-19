@@ -118,7 +118,7 @@ def post_combined_alerts(username, password):
 
 # Function to get daily total of alerts
 def alert_daily_total(day=str(date.today())):
-    url = f"https://ra-agg.kpd.one/api/v1/alerts/total?from={day}&to={day}"
+    url = f"https://agg.rocketalert.live/api/v1/alerts/total?from={day}&to={day}"
     response = requests.get(url,headers=headers).json()
     print("Fetching daily total")
     if response["success"]:
@@ -148,7 +148,7 @@ def post_daily_summary(username, password):
 
 # Main script
 if __name__ == "__main__":
-    SSL_URL = "https://ra-agg.kpd.one/api/v1/alerts/real-time"
+    SSL_URL = "https://agg.rocketalert.live/api/v1/alerts/real-time"
 
     sse_thread = threading.Thread(target=handle_sse_events, args=(SSL_URL,))
     sse_thread.daemon = True
