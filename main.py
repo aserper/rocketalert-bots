@@ -169,3 +169,6 @@ if __name__ == "__main__":
             sleep(1)  # Sleep to reduce CPU usage
     except KeyboardInterrupt:
         print("Program terminated")
+    except json.JSONDecodeError:
+        print("Quitting on JsonDecodeError in main")
+        sys.exit(1)
