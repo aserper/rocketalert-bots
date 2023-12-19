@@ -8,6 +8,7 @@ from datetime import date
 import schedule
 from time import sleep
 import sys
+import signal
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -41,14 +42,14 @@ def fetch_sse_events(url):
                     if "KEEP_ALIVE" in event_data.get('name',''): # Keepalive check to please CF
                         print("DEBUG: Received Keep alive")
                     elif "InvalidChunkLength" in event_data.get('Connection broken'):
-                        sys.exit(1) # Try to bail if sse breaks
+                        os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
                     else:
                         yield event_data
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON: {e}")
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
-        sys.exit(1)
+        os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
 
 # List to store alerts
 alerts = []
