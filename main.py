@@ -30,22 +30,30 @@ alerts_lock = threading.Lock()
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
-        response = requests.get(url, stream=True, headers=headers)
-        response.encoding = 'utf-8'
+        while True:
+            try:
+                response = requests.get(url, stream=True, headers=headers)
+                response.encoding = 'utf-8'
 
-        for line in response.iter_lines(decode_unicode=True):
-            line = line.lstrip("data:")
-            print(f"Got event: {line}")
+                for line in response.iter_lines(decode_unicode=True):
+                    line = line.lstrip("data:")
+                    print(f"Got event: {line}")
 
-            if line.strip():  # Check if the line is not empty
-                try:
-                    event_data = json.loads(line)
-                    if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
-                        print("DEBUG: Received Keep alive")
-                    else:
-                        yield event_data
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON: {e}")
+                    if line.strip():  # Check if the line is not empty
+                        try:
+                            event_data = json.loads(line)
+                            if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
+                                print("DEBUG: Received Keep alive")
+                            else:
+                                yield event_data
+                        except json.JSONDecodeError as e:
+                            print(f"Error decoding JSON: {e}")
+                break  # Exit the loop when a successful response is received
+
+            except requests.exceptions.ConnectionError as conn_error:
+                print(f"Connection error: {conn_error}")
+                sleep(5)  # Sleep for a while and retry the connection
+
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
 
