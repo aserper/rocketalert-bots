@@ -52,7 +52,7 @@ def fetch_sse_events(url):
 
             except requests.exceptions.ConnectionError as conn_error:
                 print(f"Connection error: {conn_error}")
-                sleep(5)  # Sleep for a while and retry the connection
+                sleep(0.5)  # Sleep for a while and retry the connection
 
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
