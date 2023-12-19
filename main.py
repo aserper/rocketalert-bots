@@ -47,9 +47,9 @@ def fetch_sse_events(url):
                         yield event_data
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON: {e}")
-    except Exception as ex:
-        print(f"Error fetching SSE events: {ex}")
-        os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
+ #   except Exception as ex:
+ #       print(f"Error fetching SSE events: {ex}")
+ #       os.kill(os.getpid(), signal.SIGKILL) # Try to bail if sse breaks
 
 # List to store alerts
 alerts = []
