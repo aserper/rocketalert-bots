@@ -48,7 +48,7 @@ def fetch_sse_events(url):
                     print(f"Error decoding JSON: {e}")
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
-        sys.exit()
+        sys.exit(1)
 
 # List to store alerts
 alerts = []
