@@ -2,13 +2,13 @@ import json
 import os
 import threading
 import math
+from time import sleep
+from datetime import date
+import sys
 import requests
 from mastodon import Mastodon
-from datetime import date
 import schedule
-from time import sleep
-import sys
-import signal
+
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -48,15 +48,16 @@ def fetch_sse_events(url):
                                 yield event_data
                         except json.JSONDecodeError as e:
                             print(f"Error decoding JSON: {e}")
+                            continue  # Continue to the next line if JSON decoding fails
+
                 break  # Exit the loop when a successful response is received
 
             except requests.exceptions.ConnectionError as conn_error:
                 print(f"Connection error: {conn_error}")
-                sleep(0.5)  # Sleep for a while and retry the connection
+                sleep(5)  # Sleep for a while and retry the connection
 
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
-
 # List to store alerts
 alerts = []
 
