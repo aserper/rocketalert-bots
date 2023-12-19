@@ -40,6 +40,8 @@ def fetch_sse_events(url):
                     event_data = json.loads(line)
                     if "KEEP_ALIVE" in event_data.get('name',''): # Keepalive check to please CF
                         print("DEBUG: Received Keep alive")
+                    elif "InvalidChunkLength" in event_data.get('Connection broken'):
+                        sys.exit(1) # Try to bail if sse breaks
                     else:
                         yield event_data
                 except json.JSONDecodeError as e:
