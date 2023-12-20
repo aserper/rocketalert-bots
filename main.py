@@ -2,13 +2,13 @@ import json
 import os
 import threading
 import math
-from time import sleep
-from datetime import date
-import sys
 import requests
 from mastodon import Mastodon
+from datetime import date
 import schedule
-
+from time import sleep
+import sys
+import signal
 
 print("Program started")
 masto_user = os.environ['MASTO_USER']
@@ -30,34 +30,31 @@ alerts_lock = threading.Lock()
 def fetch_sse_events(url):
     try:
         print("Opening SSE connection to fetch events")
-        while True:
-            try:
-                response = requests.get(url, stream=True, headers=headers)
-                response.encoding = 'utf-8'
+        response = requests.get(url, stream=True, headers=headers)
+        response.encoding = 'utf-8'
 
-                for line in response.iter_lines(decode_unicode=True):
-                    line = line.lstrip("data:")
-                    print(f"Got event: {line}")
+        for line in response.iter_lines(decode_unicode=True):
+            line = line.lstrip("data:")
+            print(f"Got event: {line}")
 
-                    if line.strip():  # Check if the line is not empty
-                        try:
-                            event_data = json.loads(line)
-                            if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
-                                print("DEBUG: Received Keep alive")
-                            else:
-                                yield event_data
-                        except json.JSONDecodeError as e:
-                            print(f"Error decoding JSON: {e}")
-                            continue  # Continue to the next line if JSON decoding fails
-
-                break  # Exit the loop when a successful response is received
-
-            except requests.exceptions.ConnectionError as conn_error:
-                print(f"Connection error: {conn_error}")
-                sleep(5)  # Sleep for a while and retry the connection
-
+            if line.strip():  # Check if the line is not empty
+                try:
+                    event_data = json.loads(line)
+                    if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
+                        print("DEBUG: Received Keep alive")
+                    else:
+                        yield event_data
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}")
+    except requests.exceptions.ChunkedEncodingError:
+        print("Encountered 'InvalidChunkLength' error, continuing...")
+        continue
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
+        os.kill(os.getpid(), signal.SIGKILL)  # Try to bail if SSE breaks
+        sys.exit(1)
+        print("If you see this line that something is wrong and the program didn't bail")
+
 # List to store alerts
 alerts = []
 
@@ -66,9 +63,6 @@ def handle_sse_events(sse_url):
     global alerts
     try:
         for event_data in fetch_sse_events(sse_url):
-            if event_data is None:
-                continue  # Skip None responses
-
             area_name_en = event_data.get('areaNameEn', '')
             city_name_he = event_data.get('name', '')
             city_name_en = event_data.get('englishName', '')
