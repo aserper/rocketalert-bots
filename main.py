@@ -65,6 +65,9 @@ def handle_sse_events(sse_url):
     global alerts
     try:
         for event_data in fetch_sse_events(sse_url):
+            if event_data is None:
+                continue  # Continue processing events if event_data is None
+
             area_name_en = event_data.get('areaNameEn', '')
             city_name_he = event_data.get('name', '')
             city_name_en = event_data.get('englishName', '')
@@ -81,6 +84,7 @@ def handle_sse_events(sse_url):
 
     except Exception as e:
         print(f"Error processing SSE events: {e}")
+
 
 # Function to split text into multiple posts if it exceeds 500 characters
 def split_alert_text(text):
