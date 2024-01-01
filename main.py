@@ -48,7 +48,7 @@ def fetch_sse_events(url):
                     print(f"Error decoding JSON: {e}")
     except requests.exceptions.ChunkedEncodingError:
         print("Encountered 'InvalidChunkLength' error, continuing...")
-        continue  # Continue processing events if ChunkedEncodingError occurs
+        pass  # Continue processing events if ChunkedEncodingError occurs
     except Exception as ex:
         print(f"Error fetching SSE events: {ex}")
         os.kill(os.getpid(), signal.SIGKILL)  # Try to bail if SSE breaks
