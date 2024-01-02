@@ -28,32 +28,34 @@ alerts_lock = threading.Lock()
 
 # Function to fetch SSE events from the given URL
 def fetch_sse_events(url):
-    try:
-        print("Opening SSE connection to fetch events")
-        response = requests.get(url, stream=True, headers=headers)
-        response.encoding = 'utf-8'
+    while True:
+        try:
+            print("Opening SSE connection to fetch events")
+            response = requests.get(url, stream=True, headers=headers)
+            response.encoding = 'utf-8'
 
-        for line in response.iter_lines(decode_unicode=True):
-            line = line.lstrip("data:")
-            print(f"Got event: {line}")
+            for line in response.iter_lines(decode_unicode=True):
+                line = line.lstrip("data:")
+                print(f"Got event: {line}")
 
-            if line.strip():  # Check if the line is not empty
-                try:
-                    event_data = json.loads(line)
-                    if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
-                        print("DEBUG: Received Keep alive")
-                    else:
-                        yield event_data
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON: {e}")
-    except requests.exceptions.ChunkedEncodingError:
-        print("Encountered 'InvalidChunkLength' error, continuing...")
-        pass  # Continue processing events if ChunkedEncodingError occurs
-    except Exception as ex:
-        print(f"Error fetching SSE events: {ex}")
-        os.kill(os.getpid(), signal.SIGKILL)  # Try to bail if SSE breaks
-        sys.exit(1)
-        print("If you see this line that something is wrong and the program didn't bail")
+                if line.strip():  # Check if the line is not empty
+                    try:
+                        event_data = json.loads(line)
+                        if "KEEP_ALIVE" in event_data.get('name', ''):  # Keepalive check to please CF
+                            print("DEBUG: Received Keep alive")
+                        else:
+                            yield event_data
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding JSON: {e}")
+        except requests.exceptions.ChunkedEncodingError:
+            print("Encountered 'InvalidChunkLength' error, continuing...")
+            continue  # Continue processing events if ChunkedEncodingError occurs
+        except Exception as ex:
+            print(f"Error fetching SSE events: {ex}")
+            os.kill(os.getpid(), signal.SIGKILL)  # Try to bail if SSE breaks
+            sys.exit(1)
+            print("If you see this line that something is wrong and the program didn't bail")
+
 
 
     # Continue fetching events after encountering an exception
