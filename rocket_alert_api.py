@@ -1,6 +1,6 @@
 # from datetime import date
 import requests
-
+import os
 class RocketAlertAPI:
     def __init__(self):
         self.baseURL = "https://agg.rocketalert.live/api/v1/alerts"
