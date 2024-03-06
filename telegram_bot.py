@@ -39,4 +39,4 @@ class TelegramBot:
         if not isinstance(messages, (list)):
             messages = [messages]
         for message in messages:
-            await self.client.send_message("me", message, link_preview=False)
+            await self.client.send_message("@RocketAlert", message, link_preview=False)
