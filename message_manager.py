@@ -10,7 +10,7 @@ class MessageManager:
         print(content)
 
         mastodonFooter = "https://RocketAlert.live"
-        MastodonBot().sendMessage(f"{content}{mastodonFooter}")
+#        MastodonBot().sendMessage(f"{content}{mastodonFooter}")
         print("Message posted to Mastodon.")
 
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
