@@ -10,8 +10,7 @@ class MessageManager:
         content = AlertMessageBuilder().buildAlerts(content)
         print(content)
 
-        mastodonFooter = "https://RocketAlert.live"
-        MastodonBot().sendMessage(f"{content}{mastodonFooter}")
+        MastodonBot().sendMessage(content)
         print("Message posted to Mastodon.")
 
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
