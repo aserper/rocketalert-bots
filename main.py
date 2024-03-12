@@ -6,34 +6,36 @@ from message_manager import MessageManager
 
 def main():
     print("Connecting to server and starting listening to events...")
-    try:
-        with RocketAlertAPI().listenToServerEvents() as response:
-            response.encoding = "utf-8"
-            for line in response.iter_lines(decode_unicode=True):
-                line = line.lstrip("data:")
-                # Check if the line is not empty
-                if line.strip():
-                    print(f"Received server event: {line}")
-                    eventData = json.loads(line)
-                    # Keepalive check to please CF
-                    if "KEEP_ALIVE" in eventData.get("name", ""):  
-                        print("DEBUG: Received Keep alive")
-                    elif eventData is None:
-                        print("Event is None.")
-                    else:
-                        print("Processing event...")
-                        MessageManager().postMessage(eventData)
-                        print("Event processed completed successfully.")
-    
-    except KeyboardInterrupt:
-        print("Program terminated")
-        sys.exit(1)
-    except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {e}")
-    except requests.exceptions.ChunkedEncodingError:
-        print("Encountered 'InvalidChunkLength' error, continuing...")
-    except Exception as e:
-        print(f"Error main(): {e}")
+    while True:
+        try:
+            with RocketAlertAPI().listenToServerEvents() as response:
+                response.encoding = "utf-8"
+                for line in response.iter_lines(decode_unicode=True):
+                    line = line.lstrip("data:")
+                    # Check if the line is not empty
+                    if line.strip():
+                        print(f"Received server event: {line}")
+                        eventData = json.loads(line)
+                        # Keepalive check to please CF
+                        if "KEEP_ALIVE" in eventData.get("name", ""):  
+                            print("DEBUG: Received Keep alive")
+                        elif eventData is None:
+                            print("Event is None.")
+                        else:
+                            print("Processing event...")
+                            MessageManager().postMessage(eventData)
+                            print("Event processed completed successfully.")
+        
+        except KeyboardInterrupt:
+            print("Program terminated")
+            sys.exit(1)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+        except requests.exceptions.ChunkedEncodingError as err:
+            print(f"Encountered 'InvalidChunkLength' error: {str(err)}")
+            continue
+        except Exception as e:
+            print(f"Error main(): {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 
 from telegram_bot import TelegramBot
 from mastodon_bot import MastodonBot
+from twitter_bot import TwitterBot
 from message_builder import AlertMessageBuilder
 
 class MessageManager:
@@ -9,10 +10,12 @@ class MessageManager:
         content = AlertMessageBuilder().buildAlerts(content)
         print(content)
 
-        mastodonFooter = "https://RocketAlert.live"
-        MastodonBot().sendMessage(f"{content}{mastodonFooter}")
+        MastodonBot().sendMessage(content)
         print("Message posted to Mastodon.")
 
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
         TelegramBot().sendMessage(f"{content}{telegtamFooter}")
         print("Message posted to Telegram.")
+
+        TwitterBot().sendMessage(content)
+        print("Message posted to Twitter.")
