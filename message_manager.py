@@ -34,6 +34,9 @@ class MessageManager:
         if polygon is None:
             return False
         
+        lat = eventData["lat"]
+        lon = eventData["lon"]
+
         # Encode polygon to polyline format
         polylineEncoded = polyline.encode(polygon, 5)
         # URL encode the polyline
