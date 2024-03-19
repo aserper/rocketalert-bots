@@ -33,10 +33,9 @@ class MessageManager:
         polygon = self.polygons.get(str(eventData["taCityId"]), None)
         if polygon is None:
             return False
-        
-        lat = eventData["lat"]
-        lon = eventData["lon"]
 
+        lat = eventData["lat"]
+        lon = eventData["lon"]        
         # Encode polygon to polyline format
         polylineEncoded = polyline.encode(polygon, 5)
         # URL encode the polyline
@@ -60,11 +59,11 @@ class MessageManager:
 
         hasMap = self.getStaticMap(eventData)
 
-        MastodonBot().sendMessage(content)
+        MastodonBot().sendMessage(content, self.mapFile if hasMap else None)
         print("Message posted to Mastodon.")
 
-        telegramFooter = "[RocketAlert.live](https://RocketAlert.live)"
-        TelegramBot().sendMessage(f"{content}{telegramFooter}", self.mapFile if hasMap else None)
+        telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
+        TelegramBot().sendMessage(f"{content}{telegtamFooter}", self.mapFile if hasMap else None)
         print("Message posted to Telegram.")
 
         TwitterBot().sendMessage(content)

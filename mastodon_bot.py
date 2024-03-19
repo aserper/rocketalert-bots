@@ -12,7 +12,7 @@ class MastodonBot:
         self.clientSecret = os.environ["MASTO_CLIENTSECRET"]
         self.api_baseurl = os.environ["MASTO_BASEURL"]
 
-    def sendMessage(self, content):
+    def sendMessage(self, content, file):
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -26,8 +26,13 @@ class MastodonBot:
         
         if not isinstance(content, (list)):
             content = [content]
+
         for message in content:
-            mastodon.status_post(message)
+            if file is None:
+                mastodon.status_post(message)
+            else:
+                mastodon.status_post(message, media_ids=mastodon.media_post(media_file=file))
+                
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of
     # messages, the length of each  of which < MAX_CHARACTERS
