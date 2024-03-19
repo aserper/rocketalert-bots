@@ -35,7 +35,7 @@ class MessageManager:
             return False
 
         lat = eventData["lat"]
-        lon = eventData["lon"]        
+        lon = eventData["lon"]
         # Encode polygon to polyline format
         polylineEncoded = polyline.encode(polygon, 5)
         # URL encode the polyline
@@ -58,12 +58,13 @@ class MessageManager:
         print(content)
 
         hasMap = self.getStaticMap(eventData)
+        file = self.mapFile if hasMap else None
 
-        MastodonBot().sendMessage(content, self.mapFile if hasMap else None)
+        MastodonBot().sendMessage(content, file)
         print("Message posted to Mastodon.")
 
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
-        TelegramBot().sendMessage(f"{content}{telegtamFooter}", self.mapFile if hasMap else None)
+        TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
         print("Message posted to Telegram.")
 
         TwitterBot().sendMessage(content)
