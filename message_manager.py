@@ -60,8 +60,8 @@ class MessageManager:
         MastodonBot().sendMessage(content)
         print("Message posted to Mastodon.")
 
-        telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
-        TelegramBot().sendMessage(f"{content}{telegtamFooter}", self.mapFile if hasMap else None)
+        telegramFooter = "[RocketAlert.live](https://RocketAlert.live)"
+        TelegramBot().sendMessage(f"{content}{telegramFooter}", self.mapFile if hasMap else None)
         print("Message posted to Telegram.")
 
         TwitterBot().sendMessage(content)
