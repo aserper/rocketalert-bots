@@ -67,5 +67,6 @@ class MessageManager:
         TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
         print("Message posted to Telegram.")
 
-        TwitterBot().sendMessage(content)
-        print("Message posted to Twitter.")
+        # Disabling posting to Twitter for now as current tier limit doesn't support our use case.
+        # TwitterBot().sendMessage(content)
+        # print("Message posted to Twitter.")
