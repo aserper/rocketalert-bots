@@ -16,6 +16,8 @@ idna==3.6
     # via requests
 mastodon-py==1.8.1
     # via -r requirements.in
+polyline==2.0.2
+    # via -r requirements.in
 pyaes==1.6.1
     # via telethon
 pyasn1==0.5.1
@@ -24,8 +26,7 @@ python-dateutil==2.9.0.post0
     # via mastodon-py
 python-magic==0.4.27
     # via mastodon-py
-python-twitter-v2==0.9.0
-    # Added maually due to dependency confusion
+pytwitter==0.5
     # via -r requirements.in
 requests==2.31.0
     # via
