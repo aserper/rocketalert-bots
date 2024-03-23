@@ -5,7 +5,9 @@ from rocket_alert_api import RocketAlertAPI
 from message_manager import MessageManager
 
 def main():
+    messageManager = MessageManager()
     print("Connecting to server and starting listening to events...")
+
     while True:
         try:
             with RocketAlertAPI().listenToServerEvents() as response:
@@ -23,7 +25,7 @@ def main():
                             print("Event is None.")
                         else:
                             print("Processing event...")
-                            MessageManager().postMessage(eventData)
+                            messageManager.postMessage(eventData)
                             print("Event processed completed successfully.")
         
         except KeyboardInterrupt:
