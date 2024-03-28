@@ -17,7 +17,7 @@ class AlertMessageBuilder:
         for alert in alerts:
             alertText = self.__buildAlert(alert)
             if text:
-                text = f"{text}\n\n"
+                text = f"{text}\n"
             text = f"{text}{alertText}"
         return text
 

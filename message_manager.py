@@ -26,22 +26,18 @@ class MessageManager:
 
     # Retrieves a static map with a polygon path of the alert location and saves it as a file
     # Returns True if map file saved successfully, False otherwise
-    def getStaticMap(self, eventData):
+    def buildStaticMap(self, alerts):
         if not self.polygons:
             return False
         
-        polygon = self.polygons.get(str(eventData["taCityId"]), None)
-        if polygon is None:
-            return False
+        overlays = []
+        for alert in alerts:
+            overlay = self.buildPolygonOverlay(alert)
+            if overlay is not None:
+                overlays.append(overlay)
 
-        lat = eventData["lat"]
-        lon = eventData["lon"]
-        # Encode polygon to polyline format
-        polylineEncoded = polyline.encode(polygon, 5)
-        # URL encode the polyline
-        URLEncoded = urllib.parse.quote(polylineEncoded.encode('utf-8'))
-        overlay = f"path+{self.strokeColor}+{self.strokeFill}({URLEncoded})"
-        url = f"https://api.mapbox.com/styles/v1/mapbox/{self.styleId}/static/{overlay}/{lon},{lat},10,0/400x400@2x?access_token={self.accessToken}"
+        overlaysString = ','.join(overlays)
+        url = f"https://api.mapbox.com/styles/v1/mapbox/{self.styleId}/static/{overlaysString}/auto/400x400@2x?padding=100&access_token={self.accessToken}"
 
         try:
             # Retrieve map and save to a file
@@ -49,15 +45,29 @@ class MessageManager:
                 f.write(requests.get(url).content)
                 return True
         except Exception as e:
-            print(f"getStaticMap() - Error writing file: {e}")
+            print(f"buildStaticMap() - Error writing file: {e}")
             return False
 
-    def postMessage(self, eventData):
+    # Returns a URLEncoded polyline overlay for the alert
+    # location's polygon
+    def buildPolygonOverlay(self, alert):
+        polygon = self.polygons.get(str(alert["taCityId"]), None)
+        if polygon is None:
+            return None
+
+        # Encode polygon to polyline format
+        polylineEncoded = polyline.encode(polygon, 5)
+        # URL encode the polyline
+        URLEncoded = urllib.parse.quote(polylineEncoded.encode('utf-8'))
+        overlay = f"path+{self.strokeColor}+{self.strokeFill}({URLEncoded})"
+        return overlay
+
+    def postMessage(self, alerts):
         print("Building alert message...")
-        content = AlertMessageBuilder().buildAlerts(eventData)
+        content = AlertMessageBuilder().buildAlerts(alerts)
         print(content)
 
-        hasMap = self.getStaticMap(eventData)
+        hasMap = self.buildStaticMap(alerts)
         file = self.mapFile if hasMap else None
 
         MastodonBot().sendMessage(content, file)

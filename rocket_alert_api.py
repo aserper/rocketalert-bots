@@ -3,7 +3,7 @@ import requests
 import os
 class RocketAlertAPI:
     def __init__(self):
-        self.baseURL = "https://agg.rocketalert.live/api/v1/alerts"
+        self.baseURL = "https://agg.rocketalert.live/api/v2/alerts"
         self.customHeaderValue = os.environ['CUSTOM_HEADER_KEY']
         self.customHeaderKey = "x-ra-agg-secret"
         self.headers = {
