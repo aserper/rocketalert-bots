@@ -31,13 +31,17 @@ class MessageManager:
             return False
         
         overlays = []
+        markers = []
         for alert in alerts:
             overlay = self.buildPolygonOverlay(alert)
+            markers.append(self.buildMarker(alert))
             if overlay is not None:
                 overlays.append(overlay)
 
         overlaysString = ','.join(overlays)
-        url = f"https://api.mapbox.com/styles/v1/mapbox/{self.styleId}/static/{overlaysString}/auto/400x400@2x?padding=100&access_token={self.accessToken}"
+        markersString = ','.join(markers)
+
+        url = f"https://api.mapbox.com/styles/v1/mapbox/{self.styleId}/static/{overlaysString},{markersString}/auto/400x400@2x?padding=100&access_token={self.accessToken}"
 
         try:
             # Retrieve map and save to a file
@@ -62,20 +66,26 @@ class MessageManager:
         overlay = f"path+{self.strokeColor}+{self.strokeFill}({URLEncoded})"
         return overlay
 
+    # Returns a map marker encoding for the alert's coordinates
+    def buildMarker(self, alert):
+        lat = str(alert["lat"])
+        lon = str(alert["lon"])
+        return f"pin-s+{self.strokeColor}({lon},{lat})"
+
     def postMessage(self, alerts):
         print("Building alert message...")
         content = AlertMessageBuilder().buildAlerts(alerts)
         print(content)
 
+        print("Generating static map...")
         hasMap = self.buildStaticMap(alerts)
         file = self.mapFile if hasMap else None
 
-        MastodonBot().sendMessage(content, file)
-        print("Message posted to Mastodon.")
-
+        print("Sending message...")
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
         TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
-        print("Message posted to Telegram.")
+
+        MastodonBot().sendMessage(content, file)
 
         # Disabling posting to Twitter for now as current tier limit doesn't support our use case.
         # TwitterBot().sendMessage(content)

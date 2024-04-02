@@ -21,17 +21,21 @@ class MastodonBot:
             client_id=self.clientId,
             client_secret=self.clientSecret,
         )
-
         mastodon.log_in(username=self.user, password=self.password, scopes=['read', 'write'])
         
         if not isinstance(content, (list)):
             content = [content]
 
-        for message in content:
-            if file is None:
-                mastodon.status_post(message)
-            else:
-                mastodon.status_post(message, media_ids=mastodon.media_post(media_file=file))
+        try:
+            for message in content:
+                if file is None:
+                    mastodon.status_post(message)
+                else:
+                    media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
+                    mastodon.status_post(message, media_ids=media_ids)
+            print("Message posted to Mastodon.")
+        except Exception as e:
+            print(f"Error posting message to Mastodon: {e}")
                 
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of

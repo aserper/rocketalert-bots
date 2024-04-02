@@ -39,8 +39,12 @@ class TelegramBot:
         if not isinstance(messages, (list)):
             messages = [messages]
 
-        for message in messages:
-            if file is None:
-                await self.client.send_message(self.channel, message, link_preview=False)
-            else:
-                await self.client.send_message(self.channel, message, link_preview=False, file=file)
+        try:
+            for message in messages:
+                if file is None:
+                    await self.client.send_message(self.channel, message, link_preview=False)
+                else:
+                    await self.client.send_message(self.channel, message, link_preview=False, file=file)
+            print("Message posted to Telegram.")
+        except Exception as e:
+            print(f"Error posting message to Telegram: {e}")
