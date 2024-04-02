@@ -18,14 +18,15 @@ def main():
                     if line.strip():
                         print(f"Received server event: {line}")
                         eventData = json.loads(line)
+                        alerts = eventData["alerts"]
                         # Keepalive check to please CF
-                        if "KEEP_ALIVE" in eventData.get("name", ""):  
+                        if "KEEP_ALIVE" in alerts[0].get("name", ""):
                             print("DEBUG: Received Keep alive")
                         elif eventData is None:
                             print("Event is None.")
                         else:
                             print("Processing event...")
-                            messageManager.postMessage(eventData["alerts"])
+                            messageManager.postMessage(alerts)
                             print("Event processed completed successfully.")
         
         except KeyboardInterrupt:
