@@ -30,7 +30,7 @@ python-twitter-v2==0.9.0
 #Manual fix due to confusion
 #pytwitter==0.5
     # via -r requirements.in
-requests==2.31.0
+requests==2.32.0
     # via
     #   -r requirements.in
     #   mastodon-py
