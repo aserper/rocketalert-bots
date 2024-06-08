@@ -27,4 +27,4 @@ class RocketAlertAPI:
     #         print("Please note the function only takes dates in string format (YYYY-MM-DD).")
     
     def listenToServerEvents(self):
-        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True)
+        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-1", headers=self.headers, stream=True)

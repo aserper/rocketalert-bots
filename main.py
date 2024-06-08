@@ -26,7 +26,7 @@ def main():
                             print("Event is None.")
                         else:
                             print("Processing event...")
-                            messageManager.postMessage(alerts)
+                            messageManager.postMessage(eventData)
                             print("Event processed completed successfully.")
         
         except KeyboardInterrupt:

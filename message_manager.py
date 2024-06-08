@@ -72,13 +72,13 @@ class MessageManager:
         lon = str(alert["lon"])
         return f"pin-s+{self.strokeColor}({lon},{lat})"
 
-    def postMessage(self, alerts):
+    def postMessage(self, eventData):
         print("Building alert message...")
-        content = AlertMessageBuilder().buildAlerts(alerts)
+        content = AlertMessageBuilder().buildAlerts(eventData)
         print(content)
 
         print("Generating static map...")
-        hasMap = self.buildStaticMap(alerts)
+        hasMap = self.buildStaticMap(eventData["alerts"])
         file = self.mapFile if hasMap else None
 
         print("Sending message...")

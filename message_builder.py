@@ -2,12 +2,22 @@ class AlertMessageBuilder:
     # Main entry point to build alert messages.
     # Returns a message string comprised of a rocket alert header
     # and alert location list 
-    def buildAlerts(self, alerts):
+    def buildAlerts(self, eventData):
+        alerts = eventData["alerts"]
+
         if not isinstance(alerts, (list)):
             alerts = [alerts]
 
         alertList = self.__buildAlertList(alerts)
-        header = f"Rocket alert {alerts[0]['timeStamp']}:"
+
+        alertTypeId = eventData["alertTypeId"]
+        if (alertTypeId == 1):
+            header = "Rocket alert"
+        elif (alertTypeId == 2):
+            header = "Hostile UAV alert"
+        else:
+            header = "Red alert"
+        header += f" {alerts[0]['timeStamp']}:"
         return f"{header}\n\n" \
                 f"{alertList}\n\n"
 
