@@ -44,7 +44,7 @@ python-magic==0.4.27
     # via mastodon-py
 python-twitter-v2==0.9.0
     # via -r requirements.in
-requests==2.31.0
+requests==2.32.2
     # via
     #   -r requirements.in
     #   mastodon-py
