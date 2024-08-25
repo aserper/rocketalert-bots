@@ -83,7 +83,7 @@ class MessageManager:
 
         print("Sending message...")
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
-        TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
+        #TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
 
         MastodonBot().sendMessage(content, file)
 
