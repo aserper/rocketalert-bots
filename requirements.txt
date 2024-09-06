@@ -14,7 +14,7 @@ cffi==1.17.0
     # via cryptography
 charset-normalizer==3.3.2
     # via requests
-cryptography==43.0.0
+cryptography==43.0.1
     # via authlib
 dataclasses-json==0.5.14
     # via python-twitter-v2
@@ -63,5 +63,3 @@ typing-inspect==0.9.0
     # via dataclasses-json
 urllib3==2.2.2
     # via requests
-#manual by Amit
-faulthandler
