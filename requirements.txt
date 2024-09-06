@@ -4,64 +4,27 @@
 #
 #    pip-compile
 #
-authlib==1.3.1
-    # via python-twitter-v2
-blurhash==1.1.4
-    # via mastodon-py
 certifi==2024.7.4
     # via requests
-cffi==1.17.0
-    # via cryptography
 charset-normalizer==3.3.2
     # via requests
-cryptography==43.0.0
-    # via authlib
-dataclasses-json==0.5.14
-    # via python-twitter-v2
-decorator==5.1.1
-    # via mastodon-py
 idna==3.7
     # via requests
-marshmallow==3.21.3
-    # via dataclasses-json
-mastodon-py==1.8.1
-    # via -r requirements.in
-mypy-extensions==1.0.0
-    # via typing-inspect
-packaging==24.1
-    # via marshmallow
 polyline==2.0.2
     # via -r requirements.in
 pyaes==1.6.1
     # via telethon
 pyasn1==0.5.1
     # via rsa
-pycparser==2.22
-    # via cffi
-python-dateutil==2.9.0.post0
-    # via mastodon-py
-python-magic==0.4.27
-    # via mastodon-py
-python-twitter-v2==0.9.0
+pytwitter==0.5
     # via -r requirements.in
-requests==2.32.2
-    # via
-    #   -r requirements.in
-    #   mastodon-py
-    #   python-twitter-v2
+requests==2.32.3
+    # via -r requirements.in
 rsa==4.9
     # via telethon
-six==1.16.0
-    # via
-    #   mastodon-py
-    #   python-dateutil
-telethon==1.34.0
+telethon==1.36.0
     # via -r requirements.in
-typing-extensions==4.12.2
-    # via typing-inspect
-typing-inspect==0.9.0
-    # via dataclasses-json
 urllib3==2.2.2
     # via requests
 #manual by Amit
-faulthandler
+python-twitter-v2==0.9.0
