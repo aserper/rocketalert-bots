@@ -73,19 +73,21 @@ class MessageManager:
         return f"pin-s+{self.strokeColor}({lon},{lat})"
 
     def postMessage(self, eventData):
-        print("Building alert message...")
+        print("Building alert message...", end="")
         content = AlertMessageBuilder().buildAlerts(eventData)
+        print("done:")
         print(content)
 
-        print("Generating static map...")
+        print("Generating static map...", end="")
         hasMap = self.buildStaticMap(eventData["alerts"])
         file = self.mapFile if hasMap else None
+        print("done.")
 
-        print("Sending message...")
-        telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
-        #TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
-
+        print("Posting alert:")
         MastodonBot().sendMessage(content, file)
+
+        telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
+        TelegramBot().sendMessage(f"{content}{telegtamFooter}", file)
 
         # Disabling posting to Twitter for now as current tier limit doesn't support our use case.
         # TwitterBot().sendMessage(content)
