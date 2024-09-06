@@ -63,3 +63,5 @@ typing-inspect==0.9.0
     # via dataclasses-json
 urllib3==2.2.2
     # via requests
+#manual by Amit
+faulthandler
