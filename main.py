@@ -1,10 +1,12 @@
 import requests
 import json
 import sys
+import faulthandler
 from rocket_alert_api import RocketAlertAPI
 from message_manager import MessageManager
 
 def main():
+    faulthandler.enable()
     messageManager = MessageManager()
     print("Connecting to server and starting listening to events...")
 
@@ -27,7 +29,8 @@ def main():
                         else:
                             print("Processing event...")
                             messageManager.postMessage(eventData)
-                            print("Event processed completed successfully.")
+                            print("Event processed successfully.")
+                            print("")
         
         except KeyboardInterrupt:
             print("Program terminated")

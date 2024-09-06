@@ -13,6 +13,7 @@ class MastodonBot:
         self.api_baseurl = os.environ["MASTO_BASEURL"]
 
     def sendMessage(self, content, file):
+        print("To Mastodon...", end="")
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -33,7 +34,7 @@ class MastodonBot:
                 else:
                     media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
                     mastodon.status_post(message, media_ids=media_ids)
-            print("Message posted to Mastodon.")
+            print("done.")
         except Exception as e:
             print(f"Error posting message to Mastodon: {e}")
                 

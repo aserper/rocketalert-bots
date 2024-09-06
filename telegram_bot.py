@@ -13,6 +13,7 @@ class TelegramBot:
         self.client.start()
 
     def sendMessage(self, content, file):
+        print("To Telegram...", end="")
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -38,13 +39,13 @@ class TelegramBot:
     async def __sendMessage(self, messages, file):
         if not isinstance(messages, (list)):
             messages = [messages]
-
         try:
             for message in messages:
                 if file is None:
                     await self.client.send_message(self.channel, message, link_preview=False)
                 else:
                     await self.client.send_message(self.channel, message, link_preview=False, file=file)
-            print("Message posted to Telegram.")
+                    
+            print("done.")
         except Exception as e:
             print(f"Error posting message to Telegram: {e}")
