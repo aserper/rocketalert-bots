@@ -1,12 +1,19 @@
 import requests
 import json
+import signal
 import sys
 import faulthandler
 from rocket_alert_api import RocketAlertAPI
 from message_manager import MessageManager
 
+def dump_traceback(sig, frame):
+    print("\nReceived signal to dump traceback")
+    faulthandler.dump_traceback()
+
 def main():
     faulthandler.enable()
+    signal.signal(signal.SIGUSR1, dump_traceback)
+
     messageManager = MessageManager()
     print("Connecting to server and starting listening to events...")
 
