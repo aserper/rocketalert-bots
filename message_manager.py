@@ -28,7 +28,7 @@ class MessageManager:
         for idx, alert in enumerate(alerts):
             alertLocation = f"{self.messageBuilder.buildAlert(alert)}"
             self.messageBuilder.addStaticMapData(alert, staticMap)
-            url = self.messageBuilder.buildMapURL(staticMap)
+            url = self.messageBuilder.getMapURL(staticMap)
             # If we've reached URL's max length, we:
             # Remove most recently added overlay and marker from the collection,
             # Build a new message with the current collection of overlays and markers, to be send later,
