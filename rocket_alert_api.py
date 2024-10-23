@@ -3,9 +3,9 @@ import requests
 import os
 class RocketAlertAPI:
     def __init__(self):
-        self.baseURL = "https://agg.rocketalert.live/api/v2/alerts"
-        self.customHeaderValue = os.environ['CUSTOM_HEADER_KEY']
-        self.customHeaderKey = "x-ra-agg-secret"
+        self.baseURL = os.environ['RA_BASEURL']
+        self.customHeaderValue = os.environ['CUSTOM_HEADER_VALUE']
+        self.customHeaderKey = os.environ['CUSTOM_HEADER_KEY']
         self.headers = {
             self.customHeaderKey: self.customHeaderValue,
             # Custom header to please CF
