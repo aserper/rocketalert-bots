@@ -36,7 +36,7 @@ def main():
                         else:
                             print("Processing event...")
                             messageManager.postMessage(eventData)
-                            print("Event processed successfully.")
+                            print("Event process completed.")
                             print("")
         
         except KeyboardInterrupt:

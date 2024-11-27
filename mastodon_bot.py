@@ -6,11 +6,8 @@ MAX_CHARACTERS = 500
 
 class MastodonBot:
     def __init__(self):
-        self.user = os.environ["MASTO_USER"]
-        self.password = os.environ["MASTO_PASSWORD"]
-        self.clientId = os.environ["MASTO_CLIENTID"]
-        self.clientSecret = os.environ["MASTO_CLIENTSECRET"]
         self.api_baseurl = os.environ["MASTO_BASEURL"]
+        self.accessToken = os.environ["MASTO_ACCESS_TOKEN"]
 
     def sendMessage(self, content, file):
         if len(content) > MAX_CHARACTERS:
@@ -18,11 +15,9 @@ class MastodonBot:
 
         mastodon = Mastodon(
             api_base_url=self.api_baseurl,
-            client_id=self.clientId,
-            client_secret=self.clientSecret,
+            access_token=self.accessToken
         )
-        mastodon.log_in(username=self.user, password=self.password, scopes=['read', 'write'])
-        
+
         if not isinstance(content, (list)):
             content = [content]
 
@@ -31,8 +26,12 @@ class MastodonBot:
                 if file is None:
                     mastodon.status_post(message)
                 else:
-                    media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
-                    mastodon.status_post(message, media_ids=media_ids)
+                    try:
+                        media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
+                        mastodon.status_post(message, media_ids=media_ids)
+                    except Exception as e:
+                        mastodon.status_post(message)
+                    
         except Exception as e:
             print(f"Error posting message to Mastodon: {e}")
                 
