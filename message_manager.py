@@ -59,12 +59,15 @@ class MessageManager:
             file = message["file"]
             text = message["text"]
         
-            if os.path.isfile(file):
-                print(f"    Message {idx + 1}/{len(messages)}:")
-                print("      To Telegram...", end="")
-                TelegramBot().sendMessage(f"{text}{telegtamFooter}", file)
-                print("done.")
-                print("      To Mastodon...", end="")
-                MastodonBot().sendMessage(text, file)
-                print("done.")
-                os.remove(file)
+            try:
+                if os.path.isfile(file):
+                    print(f"    Message {idx + 1}/{len(messages)}:")
+                    print("      To Telegram...", end="")
+                    TelegramBot().sendMessage(f"{text}{telegtamFooter}", file)
+                    print("done.")
+                    print("      To Mastodon...", end="")
+                    MastodonBot().sendMessage(text, file)
+                    print("done.")
+                    os.remove(file)
+            except Exception as e:
+                print(f"Error postMessage(): {e}")
