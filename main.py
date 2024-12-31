@@ -3,19 +3,23 @@ import json
 import signal
 import sys
 import faulthandler
+from datetime import datetime
 from rocket_alert_api import RocketAlertAPI
 from message_manager import MessageManager
 
+##TODO: Use a normal logging library. This is total שכונה
+
 def dump_traceback(sig, frame):
-    print("\nReceived signal to dump traceback")
+    print(f"{datetime.now()} - Received signal to dump traceback")
     faulthandler.dump_traceback()
+
 
 def main():
     faulthandler.enable()
     signal.signal(signal.SIGUSR1, dump_traceback)
 
     messageManager = MessageManager()
-    print("Connecting to server and starting listening to events...")
+    print(f"{datetime.now()} - Connecting to server and starting listening to events...")
 
     while True:
         try:
@@ -23,32 +27,30 @@ def main():
                 response.encoding = "utf-8"
                 for line in response.iter_lines(decode_unicode=True):
                     line = line.lstrip("data:")
-                    # Check if the line is not empty
                     if line.strip():
-                        print(f"Received server event: {line}")
+                        print(f"{datetime.now()} - Received server event: {line}")
                         eventData = json.loads(line)
                         alerts = eventData["alerts"]
-                        # Keepalive check to please CF
                         if "KEEP_ALIVE" in alerts[0].get("name", ""):
-                            print("DEBUG: Received Keep alive")
+                            print(f"{datetime.now()} - DEBUG: Received Keep alive")
                         elif eventData is None:
-                            print("Event is None.")
+                            print(f"{datetime.now()} - Event is None.")
                         else:
-                            print("Processing event...")
+                            print(f"{datetime.now()} - Processing event...")
                             messageManager.postMessage(eventData)
-                            print("Event process completed.")
-                            print("")
-        
+                            print(f"{datetime.now()} - Event process completed.\n")
+
         except KeyboardInterrupt:
-            print("Program terminated")
+            print(f"{datetime.now()} - Program terminated")
             sys.exit(1)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            print(f"{datetime.now()} - Error decoding JSON: {e}")
         except requests.exceptions.ChunkedEncodingError as err:
-            print(f"Encountered 'InvalidChunkLength' error: {str(err)}")
+            print(f"{datetime.now()} - Encountered 'InvalidChunkLength' error: {str(err)}")
             continue
         except Exception as e:
-            print(f"Error main(): {e}")
+            print(f"{datetime.now()} - Error main(): {e}")
+
 
 if __name__ == "__main__":
     main()
