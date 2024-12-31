@@ -19,7 +19,7 @@ def main():
     signal.signal(signal.SIGUSR1, dump_traceback)
 
     messageManager = MessageManager()
-    print(f"{datetime.now()} - Connecting to server and starting listening to events...")
+    print(f"{datetime.now()} - Connecting to server and starting to listen for events...")
 
     while True:
         try:
