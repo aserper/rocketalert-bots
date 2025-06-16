@@ -9,7 +9,7 @@ class MastodonBot:
         self.api_baseurl = os.environ["MASTO_BASEURL"]
         self.accessToken = os.environ["MASTO_ACCESS_TOKEN"]
 
-    def sendMessage(self, content, file):
+    def sendMessage(self, content):
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -23,14 +23,14 @@ class MastodonBot:
 
         try:
             for message in content:
-                if file is None:
-                    mastodon.status_post(message)
-                else:
-                    try:
-                        media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
-                        mastodon.status_post(message, media_ids=media_ids)
-                    except Exception as e:
-                        mastodon.status_post(message)
+                # if file is None:
+                mastodon.status_post(message)
+                # else:
+                #     try:
+                #         media_ids=mastodon.media_post(media_file=file, mime_type="image/png")
+                #         mastodon.status_post(message, media_ids=media_ids)
+                #     except Exception as e:
+                #         mastodon.status_post(message)
                     
         except Exception as e:
             print(f"Error posting message to Mastodon: {e}")

@@ -93,13 +93,14 @@ class AlertMessageBuilder:
 
     # Returns a Message dict which includes the its text and map filename, after writing map to disk
     def buildMessage(self, staticMap, mapFileCount, alertTypeId, timestamp, alertLocations):
-        url = self.getMapURL(staticMap)
-        filename = f"{self.mapFile}_{mapFileCount}.png"
-        self.WriteMapToFile(url, filename)
+        # url = self.getMapURL(staticMap)
+        # filename = f"{self.mapFile}_{mapFileCount}.png"
+        # self.WriteMapToFile(url, filename)
         text = self.buildMessageText(alertTypeId, timestamp, alertLocations)
-        message = {"text": text, "file": filename}
+        # message = {"text": text, "file": filename}
+        message = {"text": text}
         print("  Built message:")
-        print(f"    File: {filename}")
+        # print(f"    File: {filename}")
         print(f"    Text:")
         print(f"    {text}")
         return message
