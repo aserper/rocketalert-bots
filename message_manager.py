@@ -27,28 +27,33 @@ class MessageManager:
 
         for idx, alert in enumerate(alerts):
             alertLocation = f"{self.messageBuilder.buildAlert(alert)}"
-            self.messageBuilder.addStaticMapData(alert, staticMap)
-            url = self.messageBuilder.getMapURL(staticMap)
+            # self.messageBuilder.addStaticMapData(alert, staticMap)
+            # url = self.messageBuilder.getMapURL(staticMap)
             # If we've reached URL's max length, we:
             # Remove most recently added overlay and marker from the collection,
             # Build a new message with the current collection of overlays and markers, to be send later,
             # Start a new collection for next messages, beginning with the overlay and marker we just removed
-            if len(url) > self.MAP_MAX_REQUEST_LENGTH:
-                # Remove
-                lastOverlay = staticMap["overlays"].pop()
-                lastMarker = staticMap["markers"].pop()
 
-                # Build
-                message = self.messageBuilder.buildMessage(staticMap, mapFileCount, alertTypeId, timestamp, alertLocations)
-                messages.append(message)
+            # Disabling for now:
+            
+            # if len(url) > self.MAP_MAX_REQUEST_LENGTH:
+            #     # Remove
+            #     lastOverlay = staticMap["overlays"].pop()
+            #     lastMarker = staticMap["markers"].pop()
 
-                # Start
-                mapFileCount += 1
-                staticMap["overlays"] = [lastOverlay]
-                staticMap["markers"] = [lastMarker]
-                alertLocations = f"{alertLocation}\n"
-            else:
-                alertLocations += f"{alertLocation}\n"
+            #     # Build
+            #     message = self.messageBuilder.buildMessage(staticMap, mapFileCount, alertTypeId, timestamp, alertLocations)
+            #     messages.append(message)
+
+            #     # Start
+            #     mapFileCount += 1
+            #     staticMap["overlays"] = [lastOverlay]
+            #     staticMap["markers"] = [lastMarker]
+            #     alertLocations = f"{alertLocation}\n"
+            # else:
+            #     alertLocations += f"{alertLocation}\n"
+
+            alertLocations += f"{alertLocation}\n"
 
         message = self.messageBuilder.buildMessage(staticMap, mapFileCount, alertTypeId, timestamp, alertLocations)
         messages.append(message)
@@ -56,18 +61,20 @@ class MessageManager:
         telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
         print("  Posting:")
         for idx, message in enumerate(messages):
-            file = message["file"]
+            # file = message["file"]
             text = message["text"]
         
             try:
-                if os.path.isfile(file):
+                # if os.path.isfile(file):
                     print(f"    Message {idx + 1}/{len(messages)}:")
                     print("      To Telegram...", end="")
-                    TelegramBot().sendMessage(f"{text}{telegtamFooter}", file)
+                    # TelegramBot().sendMessage(f"{text}{telegtamFooter}", file)
+                    TelegramBot().sendMessage(f"{text}{telegtamFooter}")
                     print("done.")
                     print("      To Mastodon...", end="")
-                    MastodonBot().sendMessage(text, file)
+                    # MastodonBot().sendMessage(text, file)
+                    MastodonBot().sendMessage(text)
                     print("done.")
-                    os.remove(file)
+                    # os.remove(file)
             except Exception as e:
                 print(f"Error postMessage(): {e}")
