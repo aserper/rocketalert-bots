@@ -13,4 +13,4 @@ class RocketAlertAPI:
         }
 
     def listenToServerEvents(self):
-        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-1", headers=self.headers, stream=True, timeout=120)
+        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=120)
