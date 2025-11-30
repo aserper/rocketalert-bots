@@ -34,16 +34,7 @@ jobs:
         MASTO_BASEURL: "https://test-mastodon.social"
         MASTO_ACCESS_TOKEN: "test-token"
       run: |
-        pytest tests/ -v --cov=. --cov-report=term-missing --cov-report=xml
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
-
-    - name: Check coverage threshold
-      run: |
+        pytest tests/ -v --cov=. --cov-report=term-missing
         coverage report --fail-under=70
 
   build:
