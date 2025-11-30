@@ -16,8 +16,10 @@ class TelegramBot:
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
-        with self.client:
+        try:
             self.client.loop.run_until_complete(self.__sendMessage(content))
+        except Exception as e:
+            print(f"Error posting message to Telegram: {e}", flush=True)
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of
     # messages, the length of each  of which < MAX_CHARACTERS
@@ -46,4 +48,4 @@ class TelegramBot:
                     # await self.client.send_message(self.channel, message, link_preview=False, file=file)
                     
         except Exception as e:
-            print(f"Error posting message to Telegram: {e}")
+            print(f"Error posting message to Telegram: {e}", flush=True)
