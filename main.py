@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 import signal
 import sys
 import faulthandler
@@ -18,8 +19,10 @@ def main():
     faulthandler.enable()
     signal.signal(signal.SIGUSR1, dump_traceback)
 
-    messageManager = MessageManager()
+    commit_sha = os.getenv("COMMIT_SHA", "unknown")
+    print(f"{datetime.now()} - Starting version: {commit_sha}")
     print(f"{datetime.now()} - Connecting to server and starting to listen for events...")
+    messageManager = MessageManager()
 
     while True:
         try:
