@@ -46,7 +46,7 @@ class MastodonBot:
                 newMessage = f"{newMessage}{line}\n"
             else:
                 truncatedMessages.append(newMessage)
-                newMessage = ""
+                newMessage = f"{line}\n"
         if newMessage:
             truncatedMessages.append(newMessage)
 
