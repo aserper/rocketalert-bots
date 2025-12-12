@@ -21,7 +21,6 @@ class TestTelegramBot:
     def test_sendMessage_short_message(self, mock_client_class, mock_env_vars):
         """Test sendMessage with message under character limit"""
         mock_client = MagicMock()
-        mock_client.loop.run_until_complete = Mock()
         mock_client_class.return_value = mock_client
 
         bot = TelegramBot()
@@ -29,14 +28,15 @@ class TestTelegramBot:
 
         bot.sendMessage(short_message)
 
-        # Should call run_until_complete once
-        mock_client.loop.run_until_complete.assert_called_once()
+        # Should call send_message directly (using telethon.sync)
+        mock_client.send_message.assert_called_once_with(
+            "@RocketAlert", short_message, link_preview=False
+        )
 
     @patch('telegram_bot.TelegramClient')
     def test_sendMessage_over_limit(self, mock_client_class, mock_env_vars):
         """Test sendMessage truncates messages over 4096 chars"""
         mock_client = MagicMock()
-        mock_client.loop.run_until_complete = Mock()
         mock_client_class.return_value = mock_client
 
         bot = TelegramBot()
@@ -45,8 +45,8 @@ class TestTelegramBot:
 
         bot.sendMessage(long_message)
 
-        # Should be truncated and passed to async handler
-        mock_client.loop.run_until_complete.assert_called_once()
+        # Should be truncated and send_message called (using telethon.sync)
+        mock_client.send_message.assert_called()
 
     def test_truncateToMaxMessageSize_under_limit(self, mock_env_vars):
         """Test truncateToMaxMessageSize with message under limit"""
@@ -108,7 +108,6 @@ class TestTelegramBot:
     def test_sendMessage_handles_list(self, mock_client_class, mock_env_vars):
         """Test sendMessage handles pre-truncated message list"""
         mock_client = MagicMock()
-        mock_client.loop.run_until_complete = Mock()
         mock_client_class.return_value = mock_client
 
         bot = TelegramBot()
@@ -116,14 +115,14 @@ class TestTelegramBot:
 
         bot.sendMessage(messages)
 
-        # Should call run_until_complete once
-        mock_client.loop.run_until_complete.assert_called_once()
+        # Should call send_message for each message in the list
+        assert mock_client.send_message.call_count == 3
 
     @patch('telegram_bot.TelegramClient')
     def test_sendMessage_error_handling(self, mock_client_class, mock_env_vars):
         """Test sendMessage catches and logs errors without crashing"""
         mock_client = MagicMock()
-        mock_client.loop.run_until_complete = Mock(side_effect=Exception("Test error"))
+        mock_client.send_message = Mock(side_effect=Exception("Test error"))
         mock_client_class.return_value = mock_client
 
         bot = TelegramBot()
