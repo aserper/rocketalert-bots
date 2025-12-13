@@ -46,8 +46,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build & Push Image
+    - name: Build & Push to Docker Hub
       run: |
         echo "${{ secrets.DH_PASSWORD }}" | docker login -u "amitserper" --password-stdin
         docker build --build-arg COMMIT_SHA=${{ github.sha }} -t amitserper/rocketalert-mastodon .
         docker push amitserper/rocketalert-mastodon
+
+    - name: Push to GitHub Container Registry
+      run: |
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker tag amitserper/rocketalert-mastodon ghcr.io/${{ github.repository_owner }}/rocketalert-bots:latest
+        docker tag amitserper/rocketalert-mastodon ghcr.io/${{ github.repository_owner }}/rocketalert-bots:${{ github.sha }}
+        docker push ghcr.io/${{ github.repository_owner }}/rocketalert-bots:latest
+        docker push ghcr.io/${{ github.repository_owner }}/rocketalert-bots:${{ github.sha }}
