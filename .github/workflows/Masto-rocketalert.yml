@@ -1,4 +1,6 @@
 name: Masto-rocketalert
+permissions:
+  contents: read
 
 on:
   push:
