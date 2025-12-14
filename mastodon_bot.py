@@ -15,6 +15,7 @@ class MastodonBot:
         )
 
     def sendMessage(self, content):
+        print("      To Mastodon...", end="", flush=True)
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -34,6 +35,8 @@ class MastodonBot:
                     
         except Exception as e:
             print(f"Error posting message to Mastodon: {e}", flush=True)
+        finally:
+            print("done.", flush=True)
                 
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of

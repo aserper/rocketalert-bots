@@ -3,6 +3,7 @@ from telethon import TelegramClient
 
 # Telegram's message character limit
 MAX_CHARACTERS = 4096
+TELEGRAM_FOOTER = "[RocketAlert.live](https://RocketAlert.live)"
 
 class TelegramBot:
     def __init__(self):
@@ -13,6 +14,8 @@ class TelegramBot:
         self.client.start()
 
     def sendMessage(self, content):
+        print("      To Telegram...", end="", flush=True)
+        content = f"{content}{TELEGRAM_FOOTER}"
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
 
@@ -20,6 +23,9 @@ class TelegramBot:
             self.client.loop.run_until_complete(self.__sendMessage(content))
         except Exception as e:
             print(f"Error posting message to Telegram: {e}", flush=True)
+        finally:
+            self.client.disconnect()
+            print("done.", flush=True)
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of
     # messages, the length of each  of which < MAX_CHARACTERS

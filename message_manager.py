@@ -10,8 +10,6 @@ class MessageManager:
         # Maxbox request length limitation
         self.MAP_MAX_REQUEST_LENGTH = 8192
         self.messageBuilder = AlertMessageBuilder()
-        self.telegramBot = TelegramBot()
-        self.mastodonBot = MastodonBot()
 
     def postMessage(self, eventData):
         print("Building alert message...", flush=True)
@@ -60,7 +58,6 @@ class MessageManager:
         message = self.messageBuilder.buildMessage(staticMap, mapFileCount, alertTypeId, timestamp, alertLocations)
         messages.append(message)
         
-        telegtamFooter = "[RocketAlert.live](https://RocketAlert.live)"
         print("  Posting:", flush=True)
         for idx, message in enumerate(messages):
             # file = message["file"]
@@ -69,14 +66,8 @@ class MessageManager:
             try:
                 # if os.path.isfile(file):
                     print(f"    Message {idx + 1}/{len(messages)}:", flush=True)
-                    print("      To Telegram...", end="", flush=True)
-                    # TelegramBot().sendMessage(f"{text}{telegtamFooter}", file)
-                    self.telegramBot.sendMessage(f"{text}{telegtamFooter}")
-                    print("done.", flush=True)
-                    print("      To Mastodon...", end="", flush=True)
-                    # MastodonBot().sendMessage(text, file)
-                    self.mastodonBot.sendMessage(text)
-                    print("done.", flush=True)
+                    TelegramBot().sendMessage(f"{text}")
+                    MastodonBot().sendMessage(text)
                     # os.remove(file)
             except Exception as e:
                 print(f"Error postMessage(): {e}", flush=True)
