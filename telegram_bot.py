@@ -18,12 +18,12 @@ class TelegramBot:
         content = f"{content}{TELEGRAM_FOOTER}"
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
-
-        if not isinstance(content, (list)):
-            messages = [content]
+        else:
+            if not isinstance(content, (list)):
+                content = [content]
 
         try:
-            for message in messages:
+            for message in content:
                 self.client.send_message(self.channel, message, link_preview=False)
         except Exception as e:
             print(f"Error posting message to Telegram: {e}", flush=True)
