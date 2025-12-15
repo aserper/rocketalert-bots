@@ -36,10 +36,6 @@ class TestEndToEnd:
         assert "Nirim" in telegram_msg or "Gaza Envelope" in telegram_msg
         assert "Nirim" in mastodon_msg or "Gaza Envelope" in mastodon_msg
 
-        # Only Telegram should have footer
-        assert "[RocketAlert.live]" in telegram_msg
-        assert "[RocketAlert.live]" not in mastodon_msg
-
     @patch('message_manager.MastodonBot')
     @patch('message_manager.TelegramBot')
     def test_multiple_alerts_batch_processing(self, mock_telegram_class, mock_mastodon_class,

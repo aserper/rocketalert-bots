@@ -10,17 +10,6 @@ class TestMessageManager:
     @patch('message_manager.MastodonBot')
     @patch('message_manager.TelegramBot')
     @patch('message_manager.AlertMessageBuilder')
-    def test_init_creates_bots(self, mock_builder, mock_telegram, mock_mastodon, mock_env_vars):
-        """Test MessageManager initialization creates bot instances"""
-        manager = MessageManager()
-
-        mock_builder.assert_called_once()
-        mock_telegram.assert_called_once()
-        mock_mastodon.assert_called_once()
-
-    @patch('message_manager.MastodonBot')
-    @patch('message_manager.TelegramBot')
-    @patch('message_manager.AlertMessageBuilder')
     def test_postMessage_single_alert(self, mock_builder_class, mock_telegram_class,
                                      mock_mastodon_class, mock_env_vars, sample_event_data):
         """Test postMessage processes single alert correctly"""
@@ -75,34 +64,6 @@ class TestMessageManager:
 
         # Should call buildAlert for each alert
         assert mock_builder.buildAlert.call_count == 5
-
-    @patch('message_manager.MastodonBot')
-    @patch('message_manager.TelegramBot')
-    @patch('message_manager.AlertMessageBuilder')
-    def test_postMessage_telegram_footer_added(self, mock_builder_class, mock_telegram_class,
-                                               mock_mastodon_class, mock_env_vars, sample_event_data):
-        """Test postMessage adds RocketAlert.live footer to Telegram"""
-        # Setup mocks
-        mock_builder = MagicMock()
-        mock_builder.buildAlert.return_value = "Nirim - Gaza Envelope"
-        mock_builder.buildMessage.return_value = {
-            "text": "Alert message",
-            "file": None
-        }
-        mock_builder_class.return_value = mock_builder
-
-        mock_telegram = MagicMock()
-        mock_telegram_class.return_value = mock_telegram
-
-        mock_mastodon = MagicMock()
-        mock_mastodon_class.return_value = mock_mastodon
-
-        manager = MessageManager()
-        manager.postMessage(sample_event_data)
-
-        # Verify Telegram message includes footer
-        telegram_call_args = mock_telegram.sendMessage.call_args[0][0]
-        assert "[RocketAlert.live](https://RocketAlert.live)" in telegram_call_args
 
     @patch('message_manager.MastodonBot')
     @patch('message_manager.TelegramBot')

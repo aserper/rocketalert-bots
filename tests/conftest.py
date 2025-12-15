@@ -1,7 +1,7 @@
 import pytest
 import json
 import os
-from unittest.mock import Mock, AsyncMock, MagicMock, patch
+from unittest.mock import Mock, MagicMock, patch
 from pathlib import Path
 
 
@@ -66,7 +66,7 @@ def sample_event_data(sample_alert):
 def multi_alert_event():
     """Event with multiple alerts from test_alerts.json"""
     alerts_file = Path(__file__).parent.parent / "test_alerts.json"
-    with open(alerts_file) as f:
+    with open(alerts_file, "r",  encoding='utf-8') as f:
         alerts = json.load(f)
     return {
         "alertTypeId": 1,
@@ -78,7 +78,7 @@ def multi_alert_event():
 def test_alerts_data():
     """Full test_alerts.json data"""
     alerts_file = Path(__file__).parent.parent / "test_alerts.json"
-    with open(alerts_file) as f:
+    with open(alerts_file, "r",  encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -87,7 +87,7 @@ def mock_telegram_client():
     """Mocked TelegramClient"""
     client = MagicMock()
     client.start = Mock()
-    client.send_message = AsyncMock()
+    client.send_message = Mock()
 
     # Mock event loop
     loop = MagicMock()

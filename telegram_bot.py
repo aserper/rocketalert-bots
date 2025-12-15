@@ -1,8 +1,9 @@
 import os
-from telethon import TelegramClient
+from telethon.sync import TelegramClient
 
 # Telegram's message character limit
 MAX_CHARACTERS = 4096
+TELEGRAM_FOOTER = "[RocketAlert.live](https://RocketAlert.live)"
 
 class TelegramBot:
     def __init__(self):
@@ -13,13 +14,22 @@ class TelegramBot:
         self.client.start()
 
     def sendMessage(self, content):
+        print("      To Telegram...", end="", flush=True)
+        content = f"{content}{TELEGRAM_FOOTER}"
         if len(content) > MAX_CHARACTERS:
             content = self.truncateToMaxMessageSize(content)
+        else:
+            if not isinstance(content, (list)):
+                content = [content]
 
         try:
-            self.client.loop.run_until_complete(self.__sendMessage(content))
+            for message in content:
+                self.client.send_message(self.channel, message, link_preview=False)
         except Exception as e:
             print(f"Error posting message to Telegram: {e}", flush=True)
+        finally:
+            self.client.disconnect()
+            print("done.", flush=True)
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of
     # messages, the length of each  of which < MAX_CHARACTERS
@@ -36,16 +46,3 @@ class TelegramBot:
             truncatedMessages.append(newMessage)
 
         return truncatedMessages
-
-    async def __sendMessage(self, messages):
-        if not isinstance(messages, (list)):
-            messages = [messages]
-        try:
-            for message in messages:
-                # if file is None:
-                await self.client.send_message(self.channel, message, link_preview=False)
-                # else:
-                    # await self.client.send_message(self.channel, message, link_preview=False, file=file)
-                    
-        except Exception as e:
-            print(f"Error posting message to Telegram: {e}", flush=True)
