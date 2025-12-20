@@ -3,9 +3,9 @@ import requests
 import os
 class RocketAlertAPI:
     def __init__(self):
-        self.baseURL = os.environ['RA_BASEURL']
-        self.customHeaderValue = os.environ['CUSTOM_HEADER_VALUE']
-        self.customHeaderKey = os.environ['CUSTOM_HEADER_KEY']
+        self.baseURL = os.environ['RA_BASEURL'].strip()
+        self.customHeaderValue = os.environ['CUSTOM_HEADER_VALUE'].strip()
+        self.customHeaderKey = os.environ['CUSTOM_HEADER_KEY'].strip()
         self.headers = {
             self.customHeaderKey: self.customHeaderValue,
             "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
