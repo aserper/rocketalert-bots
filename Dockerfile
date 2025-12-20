@@ -18,5 +18,8 @@ ENV TZ="America/New_York"
 ARG COMMIT_SHA
 ENV COMMIT_SHA=$COMMIT_SHA
 
+ARG BUILD_ID
+ENV BUILD_ID=$BUILD_ID
+
 # Run Python script
 CMD ["python", "main.py"]

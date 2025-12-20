@@ -20,7 +20,8 @@ def main():
     signal.signal(signal.SIGUSR1, dump_traceback)
 
     commit_sha = os.getenv("COMMIT_SHA", "unknown")
-    print(f"{datetime.now()} - Starting version: {commit_sha} - Connecting to server and starting listening to events...")
+    build_id = os.getenv("BUILD_ID", "unknown")
+    print(f"{datetime.now()} - Starting version: {commit_sha} - Build: {build_id} - Connecting to server and starting listening to events...")
     messageManager = MessageManager()
 
     while True:
