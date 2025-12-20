@@ -13,4 +13,5 @@ class RocketAlertAPI:
         }
 
     def listenToServerEvents(self):
-        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=120)
+        print(f"DEBUG: Connecting to {self.baseURL}/real-time...", flush=True)
+        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=(10, 120))

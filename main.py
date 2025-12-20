@@ -20,12 +20,14 @@ def main():
     signal.signal(signal.SIGUSR1, dump_traceback)
 
     commit_sha = os.getenv("COMMIT_SHA", "unknown")
-    print(f"{datetime.now()} - Starting version: {commit_sha} - Connecting to server and starting listening to events...")
+    print(f"{datetime.now()} - Starting version: {commit_sha} - Connecting to server and starting listening to events...", flush=True)
     messageManager = MessageManager()
 
     while True:
         try:
+            print("DEBUG: Calling listenToServerEvents...", flush=True)
             with RocketAlertAPI().listenToServerEvents() as response:
+                print("DEBUG: Connection established. Listening for events...", flush=True)
                 response.encoding = "utf-8"
                 for line in response.iter_lines(decode_unicode=True):
                     line = line.lstrip("data:")
