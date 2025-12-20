@@ -38,8 +38,9 @@ class TelegramBot:
             if len(newMessage) + len(line) +1 < MAX_CHARACTERS:
                 newMessage = f"{newMessage}{line}\n"
             else:
-                truncatedMessages.append(newMessage)
-                newMessage = ""
+                if newMessage:
+                    truncatedMessages.append(newMessage)
+                newMessage = f"{line}\n"
         if newMessage:
             truncatedMessages.append(newMessage)
 
