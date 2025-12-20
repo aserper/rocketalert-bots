@@ -1,5 +1,5 @@
 # Use an appropriate base image with Python pre-installed
-FROM alpine:3.18
+FROM python:3.10-slim
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -8,11 +8,8 @@ WORKDIR /app
 COPY . /app
 
 # Install any Python dependencies
-RUN apk update
-RUN apk add tzdata
-RUN apk add python3
-RUN apk add py3-pip
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir -r requirements.txt
 ENV TZ="America/New_York"
 
 ARG COMMIT_SHA

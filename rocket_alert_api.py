@@ -9,9 +9,12 @@ class RocketAlertAPI:
         self.headers = {
             self.customHeaderKey: self.customHeaderValue,
             # Custom header to please CF
-            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
 
     def listenToServerEvents(self):
         print(f"DEBUG: Connecting to {self.baseURL}/real-time...", flush=True)
-        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=(10, 120))
+        # Timeout: (connect_timeout, read_timeout)
+        # Connect: 10s (fail fast if network down)
+        # Read: 35s (Keep-alives are sent every 20s. If we miss one + buffer, reconnect)
+        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=(10, 35))
