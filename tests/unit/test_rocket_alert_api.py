@@ -22,10 +22,7 @@ class TestRocketAlertAPI:
         assert "X-Test-Header" in api.headers
         assert api.headers["X-Test-Header"] == "test-value"
         assert "user-agent" in api.headers
-        assert "Chrome" in api.headers["user-agent"]
-        assert api.headers["Accept"] == "text/event-stream"
-        assert api.headers["Cache-Control"] == "no-cache"
-        assert api.headers["Connection"] == "keep-alive"
+        assert "Firefox" in api.headers["user-agent"]
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_correct_url(self, mock_get, mock_env_vars):
@@ -86,12 +83,12 @@ class TestRocketAlertAPI:
 
         assert result == mock_response
 
-    def test_user_agent_contains_chrome(self, mock_env_vars):
-        """Test User-Agent header contains Chrome identifier"""
+    def test_user_agent_contains_firefox(self, mock_env_vars):
+        """Test User-Agent header contains Firefox identifier"""
         api = RocketAlertAPI()
 
-        assert "Chrome" in api.headers["user-agent"]
-        # Typical Chrome user-agent format
+        assert "Firefox" in api.headers["user-agent"]
+        # Typical Firefox user-agent format
         assert "Mozilla" in api.headers["user-agent"]
 
     @patch('rocket_alert_api.requests.get')

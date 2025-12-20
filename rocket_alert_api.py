@@ -8,10 +8,8 @@ class RocketAlertAPI:
         self.customHeaderKey = os.environ['CUSTOM_HEADER_KEY'].strip()
         self.headers = {
             self.customHeaderKey: self.customHeaderValue,
-            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/event-stream",
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive"
+            # Custom header to please CF
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
         }
 
     def listenToServerEvents(self):
