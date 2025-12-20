@@ -50,7 +50,7 @@ jobs:
     - name: Build & Push to Docker Hub
       run: |
         echo "${{ secrets.DH_PASSWORD }}" | docker login -u "amitserper" --password-stdin
-        docker build --build-arg COMMIT_SHA=${{ github.sha }} --build-arg BUILD_ID=${{ github.run_id }} -t amitserper/rocketalert-mastodon .
+        docker build --build-arg COMMIT_SHA=${{ github.sha }} -t amitserper/rocketalert-mastodon .
         docker push amitserper/rocketalert-mastodon
 
     - name: Push to GitHub Container Registry
