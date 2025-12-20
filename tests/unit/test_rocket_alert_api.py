@@ -22,7 +22,7 @@ class TestRocketAlertAPI:
         assert "X-Test-Header" in api.headers
         assert api.headers["X-Test-Header"] == "test-value"
         assert "user-agent" in api.headers
-        assert "Firefox" in api.headers["user-agent"]
+        assert "Chrome" in api.headers["user-agent"]
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_correct_url(self, mock_get, mock_env_vars):
@@ -52,14 +52,14 @@ class TestRocketAlertAPI:
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_timeout(self, mock_get, mock_env_vars):
-        """Test listenToServerEvents sets 120s timeout"""
+        """Test listenToServerEvents sets correct timeout"""
         api = RocketAlertAPI()
         api.listenToServerEvents()
 
         # Verify timeout parameter
         call_kwargs = mock_get.call_args[1]
         assert "timeout" in call_kwargs
-        assert call_kwargs["timeout"] == 120
+        assert call_kwargs["timeout"] == (10, 35)
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_streaming(self, mock_get, mock_env_vars):
@@ -83,12 +83,12 @@ class TestRocketAlertAPI:
 
         assert result == mock_response
 
-    def test_user_agent_contains_firefox(self, mock_env_vars):
-        """Test User-Agent header contains Firefox identifier"""
+    def test_user_agent_contains_chrome(self, mock_env_vars):
+        """Test User-Agent header contains Chrome identifier"""
         api = RocketAlertAPI()
 
-        assert "Firefox" in api.headers["user-agent"]
-        # Typical Firefox user-agent format
+        assert "Chrome" in api.headers["user-agent"]
+        # Typical Chrome user-agent format
         assert "Mozilla" in api.headers["user-agent"]
 
     @patch('rocket_alert_api.requests.get')
@@ -105,5 +105,5 @@ class TestRocketAlertAPI:
 
         # Keyword arguments
         assert call_kwargs["headers"]["X-Test-Header"] == "test-value"
-        assert call_kwargs["timeout"] == 120
+        assert call_kwargs["timeout"] == (10, 35)
         assert call_kwargs["stream"] is True
