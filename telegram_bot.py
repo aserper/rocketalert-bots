@@ -11,7 +11,9 @@ class TelegramBot:
         self.api_hash = os.environ["TELEGRAM_API_HASH"]
         self.channel = "@RocketAlert"
         self.client = TelegramClient('/session/session_name', self.api_id, self.api_hash)
+        print("DEBUG: Connecting to TelegramClient...", flush=True)
         self.client.start()
+        print("DEBUG: Connected to TelegramClient.", flush=True)
 
     def sendMessage(self, content):
         print("      To Telegram...", end="", flush=True)

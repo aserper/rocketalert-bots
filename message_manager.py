@@ -6,12 +6,16 @@ import os
 
 class MessageManager:
     def __init__(self):
+        print("DEBUG: Initializing MessageManager...", flush=True)
         self.mapFileCount = 0
         # Maxbox request length limitation
         self.MAP_MAX_REQUEST_LENGTH = 8192
         self.messageBuilder = AlertMessageBuilder()
+        print("DEBUG: Initializing TelegramBot...", flush=True)
         self.telegramBot = TelegramBot()
+        print("DEBUG: Initializing MastodonBot...", flush=True)
         self.mastodonBot = MastodonBot()
+        print("DEBUG: MessageManager initialized.", flush=True)
 
     def postMessage(self, eventData):
         print("Building alert message...", flush=True)
