@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install any Python dependencies
-RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y tzdata dnsutils iputils-ping && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r requirements.txt
 ENV TZ="America/New_York"
 
