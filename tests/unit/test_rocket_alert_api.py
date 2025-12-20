@@ -23,6 +23,9 @@ class TestRocketAlertAPI:
         assert api.headers["X-Test-Header"] == "test-value"
         assert "user-agent" in api.headers
         assert "Chrome" in api.headers["user-agent"]
+        assert api.headers["Accept"] == "text/event-stream"
+        assert api.headers["Cache-Control"] == "no-cache"
+        assert api.headers["Connection"] == "keep-alive"
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_correct_url(self, mock_get, mock_env_vars):
