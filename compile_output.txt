@@ -1,0 +1,56 @@
+  ERROR: Cannot install -r requirements.in (line 10) and coverage==7.6.9 because these package versions have conflicting dependencies.
+Discarding coverage[toml]==7.6.9 (from -r requirements.txt (line 17)) to proceed the resolution
+  ERROR: Cannot install -r requirements.in (line 10) and coverage==7.6.9 because these package versions have conflicting dependencies.
+Traceback (most recent call last):
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/resolver.py", line 99, in resolve
+    result = self._result = resolver.resolve(
+                            ~~~~~~~~~~~~~~~~^
+        collected.requirements, max_rounds=limit_how_complex_resolution_can_be
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/resolvers/resolution.py", line 601, in resolve
+    state = resolution.resolve(requirements, max_rounds=max_rounds)
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/resolvers/resolution.py", line 542, in resolve
+    raise ResolutionImpossible(self.state.backtrack_causes)
+pip._vendor.resolvelib.resolvers.exceptions.ResolutionImpossible: [RequirementInformation(requirement=SpecifierWithoutExtrasRequirement('coverage==7.6.9'), parent=None), RequirementInformation(requirement=SpecifierWithoutExtrasRequirement('coverage>=7.10.6'), parent=LinkCandidate('https://files.pythonhosted.org/packages/ee/49/1377b49de7d0c1ce41292161ea0f721913fa8722c19fb9c1e3aa0367eecb/pytest_cov-7.0.0-py3-none-any.whl (from https://pypi.org/simple/pytest-cov/) (requires-python:>=3.9)'))]
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/amit/projects/rocketalert-bots/./venv/bin/pip-compile", line 7, in <module>
+    sys.exit(cli())
+             ~~~^^
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/click/core.py", line 1485, in __call__
+    return self.main(*args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/click/core.py", line 1406, in main
+    rv = self.invoke(ctx)
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/click/core.py", line 1269, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/click/core.py", line 824, in invoke
+    return callback(*args, **kwargs)
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/click/decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/piptools/scripts/compile.py", line 481, in cli
+    results = resolver.resolve(max_rounds=max_rounds)
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/piptools/resolver.py", line 641, in resolve
+    is_resolved = self._do_resolve(
+        resolver=resolver,
+        compatible_existing_constraints=compatible_existing_constraints,
+    )
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/piptools/resolver.py", line 676, in _do_resolve
+    resolver.resolve(
+    ~~~~~~~~~~~~~~~~^
+        root_reqs=self.constraints
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        + list(compatible_existing_constraints.values()),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_supported_wheels=not self.options.target_dir,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/amit/projects/rocketalert-bots/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/resolver.py", line 108, in resolve
+    raise error from e
+pip._internal.exceptions.DistributionNotFound: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
