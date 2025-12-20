@@ -33,7 +33,7 @@ class TestRocketAlertAPI:
         # Verify requests.get was called with correct URL
         mock_get.assert_called_once()
         call_args = mock_get.call_args
-        assert call_args[0][0] == "https://test-api.example.com/real-time"
+        assert call_args[0][0] == "https://test-api.example.com/real-time?alertTypeId=-1"
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_headers(self, mock_get, mock_env_vars):
@@ -51,15 +51,14 @@ class TestRocketAlertAPI:
         assert "user-agent" in headers
 
     @patch('rocket_alert_api.requests.get')
-    def test_listenToServerEvents_timeout(self, mock_get, mock_env_vars):
-        """Test listenToServerEvents sets correct timeout"""
+    def test_listenToServerEvents_no_timeout(self, mock_get, mock_env_vars):
+        """Test listenToServerEvents does not set an explicit timeout constraint anymore"""
         api = RocketAlertAPI()
         api.listenToServerEvents()
 
-        # Verify timeout parameter
+        # Verify timeout parameter is not passed (using default)
         call_kwargs = mock_get.call_args[1]
-        assert "timeout" in call_kwargs
-        assert call_kwargs["timeout"] == (10, 35)
+        assert "timeout" not in call_kwargs
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_streaming(self, mock_get, mock_env_vars):
@@ -101,9 +100,9 @@ class TestRocketAlertAPI:
         call_args, call_kwargs = mock_get.call_args
 
         # URL as positional arg
-        assert call_args[0] == "https://test-api.example.com/real-time"
+        assert call_args[0] == "https://test-api.example.com/real-time?alertTypeId=-1"
 
         # Keyword arguments
         assert call_kwargs["headers"]["X-Test-Header"] == "test-value"
-        assert call_kwargs["timeout"] == (10, 35)
+        assert "timeout" not in call_kwargs
         assert call_kwargs["stream"] is True

@@ -13,14 +13,11 @@ class RocketAlertAPI:
         }
 
     def listenToServerEvents(self):
-        print(f"DEBUG: Connecting to {self.baseURL}/real-time...", flush=True)
+        print(f"DEBUG: Connecting to {self.baseURL}/real-time?alertTypeId=-1...", flush=True)
         # Log headers safely (masking custom header value if possible, but for now just showing keys is safer or strict specific masking)
         safe_headers = self.headers.copy()
         if self.customHeaderKey in safe_headers:
              safe_headers[self.customHeaderKey] = "***REDACTED***"
         print(f"DEBUG: Request Headers: {safe_headers}", flush=True)
         
-        # Timeout: (connect_timeout, read_timeout)
-        # Connect: 10s (fail fast if network down)
-        # Read: 35s (Keep-alives are sent every 20s. If we miss one + buffer, reconnect)
-        return requests.get(f"{self.baseURL}/real-time", headers=self.headers, stream=True, timeout=(10, 35))
+        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-1", headers=self.headers, stream=True)
