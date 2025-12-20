@@ -10,6 +10,8 @@ class MessageManager:
         # Maxbox request length limitation
         self.MAP_MAX_REQUEST_LENGTH = 8192
         self.messageBuilder = AlertMessageBuilder()
+        self.telegramBot = TelegramBot()
+        self.mastodonBot = MastodonBot()
 
     def postMessage(self, eventData):
         print("Building alert message...", flush=True)
@@ -66,8 +68,8 @@ class MessageManager:
             try:
                 # if os.path.isfile(file):
                     print(f"    Message {idx + 1}/{len(messages)}:", flush=True)
-                    TelegramBot().sendMessage(f"{text}")
-                    MastodonBot().sendMessage(text)
+                    self.telegramBot.sendMessage(f"{text}")
+                    self.mastodonBot.sendMessage(text)
                     # os.remove(file)
             except Exception as e:
                 print(f"Error postMessage(): {e}", flush=True)

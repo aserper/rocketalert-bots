@@ -27,9 +27,7 @@ class TelegramBot:
                 self.client.send_message(self.channel, message, link_preview=False)
         except Exception as e:
             print(f"Error posting message to Telegram: {e}", flush=True)
-        finally:
-            self.client.disconnect()
-            print("done.", flush=True)
+        print("done.", flush=True)
 
     # Splits a message string whose length > MAX_CHARACTERS into a list of
     # messages, the length of each  of which < MAX_CHARACTERS
