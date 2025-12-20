@@ -1,4 +1,5 @@
 import os
+import sys
 from telethon.sync import TelegramClient
 
 # Telegram's message character limit
@@ -12,7 +13,10 @@ class TelegramBot:
         self.channel = "@RocketAlert"
         self.client = TelegramClient('/session/session_name', self.api_id, self.api_hash)
         print("DEBUG: Connecting to TelegramClient...", flush=True)
-        self.client.start()
+        self.client.connect()
+        if not self.client.is_user_authorized():
+            print("CRITICAL ERROR: Telegram Client is not authorized. Session file is missing or invalid.", flush=True)
+            sys.exit(1)
         print("DEBUG: Connected to TelegramClient.", flush=True)
 
     def sendMessage(self, content):
