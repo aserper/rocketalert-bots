@@ -99,37 +99,39 @@ class TestStress:
 
 class TestTelegramBotStress:
     """Stress tests specifically for TelegramBot Logic"""
-    
-    @patch('telegram_bot.TelegramClient')
-    @patch.dict('os.environ', {'TELEGRAM_API_ID': '123', 'TELEGRAM_API_HASH': 'abc'})
-    def test_splitting_massive_message(self, mock_client_class):
+
+    @patch('telegram_bot.TeleBot')
+    @patch.dict('os.environ', {'TELEGRAM_BOT_TOKEN': '123:abc', 'TELEGRAM_CHANNEL_ID': '@RocketAlert'})
+    def test_splitting_massive_message(self, mock_bot_class):
         from telegram_bot import TelegramBot
-        
-        mock_client = MagicMock()
-        mock_client_class.return_value = mock_client
-        
+
+        mock_bot = MagicMock()
+        mock_bot.get_me.return_value = MagicMock(username='TestBot')
+        mock_bot_class.return_value = mock_bot
+
         bot = TelegramBot()
-        
+
         # Create a massive message: 1000 lines, each 20 chars = 20,000 chars
         # Limit is 4096. Should split into ~5 messages.
         lines = [f"Line {i} - some content here" for i in range(1000)]
         massive_content = "\n".join(lines)
-        
+
         bot.sendMessage(massive_content)
-        
+
         # Verify split
-        # sendMessage calls client.send_message loop.
+        # sendMessage calls bot.send_message loop.
         # We want to see how many times send_message was called.
-        
-        assert mock_client.send_message.call_count >= 5
-        
+
+        assert mock_bot.send_message.call_count >= 5
+
         # Verify total characters sent roughly matches total
         total_chars_sent = 0
-        for call_args in mock_client.send_message.call_args_list:
-            msg = call_args[0][1] # arg 1 is message
+        for call_args in mock_bot.send_message.call_args_list:
+            call_kwargs = call_args.kwargs
+            msg = call_kwargs['text']  # text is a keyword argument
             assert len(msg) <= 4096
             total_chars_sent += len(msg)
-            
+
         # Note: The splitting logic might add/remove newlines, so we check approximate length
         # original length + metadata?
         # The bot adds a footer to EACH message or just once?
@@ -137,8 +139,8 @@ class TestTelegramBotStress:
         # Code: content = f"{content}{TELEGRAM_FOOTER}" -> Adds footer ONCE at start.
         # Then truncateToMaxMessageSize splits it.
         # So sum of parts should equal (original + footer).
-        
+
         # Wait, `truncateToMaxMessageSize` might duplicate headers? No, likely just splits.
         # Let's conservatively say it should contain all original content.
-        
+
         assert total_chars_sent >= len(massive_content)

@@ -37,8 +37,8 @@ CUSTOM_HEADER_KEY=X-Custom-Header                # Custom header name for API au
 CUSTOM_HEADER_VALUE=your-secret-value            # Custom header value for API auth
 
 # Telegram Configuration
-TELEGRAM_API_ID=123456789                        # From https://my.telegram.org/apps
-TELEGRAM_API_HASH=0123456789abcdef               # From https://my.telegram.org/apps
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHI...        # From @BotFather
+TELEGRAM_CHANNEL_ID=@RocketAlert                 # Channel username (optional)
 
 # Mastodon Configuration
 MASTO_BASEURL=https://mastodon.social            # Mastodon instance URL
@@ -62,11 +62,12 @@ COMMIT_SHA=abc123def456                          # Git commit SHA (set by Docker
 
 ### Telegram
 
-- **Account Type:** Bot channel (@RocketAlert)
+- **Account Type:** Bot account (created via @BotFather)
+- **Authentication:** Token-based (no session files needed)
+- **Channel:** @RocketAlert (or custom channel via TELEGRAM_CHANNEL_ID)
 - **Character Limit:** 4096 characters per message
 - **Truncation:** Messages exceeding limit are split into multiple parts
-- **Session:** Stored locally in `/session/session_name` (created on first auth)
-- **Implementation:** Uses `telethon.sync` for synchronous operation
+- **Implementation:** Uses `pyTelegramBotAPI` for synchronous operation
 
 ### Mastodon
 
@@ -156,8 +157,8 @@ docker build --build-arg COMMIT_SHA=$(git rev-parse HEAD) -t rocketalert-bots:la
 docker run -e RA_BASEURL="https://..." \
            -e CUSTOM_HEADER_KEY="..." \
            -e CUSTOM_HEADER_VALUE="..." \
-           -e TELEGRAM_API_ID="..." \
-           -e TELEGRAM_API_HASH="..." \
+           -e TELEGRAM_BOT_TOKEN="..." \
+           -e TELEGRAM_CHANNEL_ID="@RocketAlert" \
            -e MASTO_BASEURL="..." \
            -e MASTO_ACCESS_TOKEN="..." \
            amitserper/rocketalert-mastodon
@@ -213,8 +214,8 @@ pip install -r requirements.txt
 export RA_BASEURL="https://..."
 export CUSTOM_HEADER_KEY="..."
 export CUSTOM_HEADER_VALUE="..."
-export TELEGRAM_API_ID="..."
-export TELEGRAM_API_HASH="..."
+export TELEGRAM_BOT_TOKEN="..."
+export TELEGRAM_CHANNEL_ID="@RocketAlert"
 export MASTO_BASEURL="..."
 export MASTO_ACCESS_TOKEN="..."
 
@@ -250,8 +251,8 @@ python main.py
 ### Core Libraries
 
 - **requests** - HTTP client for API calls
-- **telethon** - Telegram Bot API client (v1.36.0)
-- **mastodon-py** - Mastodon API client (v1.8.1)
+- **pyTelegramBotAPI** - Telegram Bot API client (v4.14.0)
+- **mastodon-py** - Mastodon API client (v2.1.4)
 
 ### Testing Libraries
 
@@ -296,17 +297,11 @@ After first push to GHCR:
 
 **Symptom:** Logs show "To Telegram..." but never progress to "done."
 
-**Root Cause:** Event loop deadlock when using `run_until_complete()` on already-running loop
+**Root Cause:** Previous issue with telethon event loop deadlock (now resolved)
 
-**Fix:** Use `telethon.sync` module for synchronous operation (see PR #34)
+**Fix:** ✅ Fixed in v2.0 - Uses `pyTelegramBotAPI` with synchronous operation and token-based authentication
 
-**Current Status:** ✅ Fixed in `telegram_bot.py:2` (imports from `telethon.sync`)
-
-### Telegram Session Issues
-
-**Problem:** Bot requires interactive authentication on first run
-
-**Solution:** Create the `/session` directory beforehand or handle auth flow in deployment environment
+**Current Status:** ✅ Eliminated - No longer uses session files or async event loops
 
 ### Mastodon API Timeouts
 
@@ -375,5 +370,6 @@ docker images amitserper/rocketalert-mastodon
 
 - [TESTING.md](./TESTING.md) - Comprehensive testing guide
 - [RocketAlert API](https://rocketalert.live/) - Alert service
-- [Telethon Docs](https://docs.telethon.dev/) - Telegram Bot API client
+- [pyTelegramBotAPI Docs](https://github.com/eternnoir/pyTelegramBotAPI) - Telegram Bot API client
+- [Telegram Bot API](https://core.telegram.org/bots/api) - Official Telegram Bot API
 - [Mastodon.py Docs](https://mastodonpy.readthedocs.io/) - Mastodon API client

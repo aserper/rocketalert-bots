@@ -32,8 +32,8 @@ jobs:
         CUSTOM_HEADER_VALUE: "test-value"
         CUSTOM_HEADER_KEY: "X-Test-Header"
         MAPBOX_TOKEN: "test-mapbox-token"
-        TELEGRAM_API_ID: "12345"
-        TELEGRAM_API_HASH: "test-hash"
+        TELEGRAM_BOT_TOKEN: "12345:test-bot-token"
+        TELEGRAM_CHANNEL_ID: "@RocketAlert"
         MASTO_BASEURL: "https://test-mastodon.social"
         MASTO_ACCESS_TOKEN: "test-token"
       run: |

@@ -1,7 +1,7 @@
 polyline==2.0.4
 python-twitter-v2==0.9.3
 Requests==2.32.5
-telethon==1.42.0
+pyTelegramBotAPI==4.14.0
 Mastodon.py==2.1.4
 pytest==9.0.2
 pytest-faulthandler==2.0.1
