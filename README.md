@@ -6,6 +6,15 @@ A bot service for monitoring Rocket Alerts and posting them to Telegram and Mast
 
 This application listens to a RocketAlert API server for incoming alerts and automatically posts them to configured social media platforms (Telegram and Mastodon). The bot handles message formatting, character limits per platform, and error recovery.
 
+## Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - System design, component architecture, data flow diagrams
+- **[API_REFERENCE.md](./docs/API_REFERENCE.md)** - Module documentation, function signatures, configuration reference
+- **[SETUP_GUIDE.md](./docs/SETUP_GUIDE.md)** - Installation, development setup, Docker, Kubernetes deployment
+- **[TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues, debug logging, log analysis
+
 ## Project Structure
 
 ### Core Files
