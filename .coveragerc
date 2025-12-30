@@ -1,4 +1,5 @@
 [run]
 omit =
     debug_connection.py
+    main.py
     tests/*
