@@ -23,7 +23,7 @@ class TestMastodonBot:
     @patch('mastodon_bot.Mastodon')
     def test_mastodon_client_timeout_configuration(self, mock_mastodon_class, mock_env_vars):
         """Test Mastodon client is initialized with 30s timeout"""
-        bot = MastodonBot()
+        MastodonBot()
 
         # Verify timeout parameter was passed
         call_kwargs = mock_mastodon_class.call_args[1]

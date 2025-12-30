@@ -2,7 +2,6 @@
 from telegram_bot import TelegramBot
 from mastodon_bot import MastodonBot
 from message_builder import AlertMessageBuilder
-import os
 
 class MessageManager:
     def __init__(self):

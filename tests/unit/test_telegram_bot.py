@@ -39,7 +39,7 @@ class TestTelegramBot:
         call_kwargs = mock_bot.send_message.call_args.kwargs
         assert call_kwargs['chat_id'] == '@RocketAlert'
         assert call_kwargs['parse_mode'] == 'Markdown'
-        assert call_kwargs['disable_web_page_preview'] == True
+        assert call_kwargs['disable_web_page_preview'] is True
 
     @patch('telegram_bot.TeleBot')
     def test_sendMessage_over_limit(self, mock_bot_class, mock_env_vars):

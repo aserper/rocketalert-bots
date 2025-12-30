@@ -1,6 +1,5 @@
 import os
 import sys
-import telebot
 from telebot import TeleBot
 
 # Telegram's message character limit

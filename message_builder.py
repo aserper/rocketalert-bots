@@ -16,7 +16,7 @@ class AlertMessageBuilder:
             file = open("polygons.json")
             self.polygons = json.load(file)
             file.close()
-        except Exception as e:
+        except Exception:
             self.polygons = None
 
     # Retrieves a static map from URL and writes it to disk
@@ -101,6 +101,6 @@ class AlertMessageBuilder:
         message = {"text": text}
         print("  Built message:")
         # print(f"    File: {filename}")
-        print(f"    Text:")
+        print("    Text:")
         print(f"    {text}")
         return message
