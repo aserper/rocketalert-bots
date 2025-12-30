@@ -20,4 +20,7 @@ class RocketAlertAPI:
              safe_headers[self.customHeaderKey] = "***REDACTED***"
         print(f"DEBUG: Request Headers: {safe_headers}", flush=True)
         
-        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-1", headers=self.headers, stream=True)
+        # Timeout: (connect_timeout, read_timeout)
+        # Connect: 10s (fail fast if network down)
+        # Read: 60s (3x keep-alive interval of 20s - very conservative)
+        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-1", headers=self.headers, stream=True, timeout=(10, 60))

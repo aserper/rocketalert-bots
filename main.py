@@ -3,10 +3,15 @@ import json
 import os
 import signal
 import sys
+import time
 import faulthandler
 from datetime import datetime
+from pathlib import Path
 from rocket_alert_api import RocketAlertAPI
 from message_manager import MessageManager
+
+# Heartbeat file for K8s liveness probe
+HEARTBEAT_FILE = Path("/tmp/heartbeat")
 
 ##TODO: Use a normal logging library. This is total שכונה
 
@@ -37,6 +42,8 @@ def main():
                         alerts = eventData["alerts"]
                         if "KEEP_ALIVE" in alerts[0].get("name", ""):
                             print(f"{datetime.now()} - DEBUG: Received Keep alive")
+                            # Write heartbeat file for K8s liveness probe
+                            HEARTBEAT_FILE.write_text(str(datetime.now().timestamp()))
                         elif eventData is None:
                             print(f"{datetime.now()} - Event is None.")
                         else:
@@ -47,13 +54,23 @@ def main():
         except KeyboardInterrupt:
             print(f"{datetime.now()} - Program terminated")
             sys.exit(1)
+        except requests.exceptions.ReadTimeout:
+            print(f"{datetime.now()} - Connection timeout (no data received in 60s), reconnecting...")
+            continue
+        except requests.exceptions.ConnectionError as e:
+            print(f"{datetime.now()} - Connection error: {e}")
+            time.sleep(5)  # Brief backoff before reconnecting
+            continue
         except json.JSONDecodeError as e:
             print(f"{datetime.now()} - Error decoding JSON: {e}")
+            continue  # Reconnect on JSON errors
         except requests.exceptions.ChunkedEncodingError as err:
             print(f"{datetime.now()} - Encountered 'InvalidChunkLength' error: {str(err)}")
             continue
         except Exception as e:
             print(f"{datetime.now()} - Error main(): {e}")
+            time.sleep(5)  # Brief backoff on unexpected errors
+            continue  # Always try to reconnect
 
 
 if __name__ == "__main__":

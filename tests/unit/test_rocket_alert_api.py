@@ -51,14 +51,16 @@ class TestRocketAlertAPI:
         assert "user-agent" in headers
 
     @patch('rocket_alert_api.requests.get')
-    def test_listenToServerEvents_no_timeout(self, mock_get, mock_env_vars):
-        """Test listenToServerEvents does not set an explicit timeout constraint anymore"""
+    def test_listenToServerEvents_timeout(self, mock_get, mock_env_vars):
+        """Test listenToServerEvents sets appropriate timeout for SSE connection"""
         api = RocketAlertAPI()
         api.listenToServerEvents()
 
-        # Verify timeout parameter is not passed (using default)
+        # Verify timeout parameter is set (10s connect, 60s read)
+        # Read timeout is 3x the keep-alive interval (20s) for safety
         call_kwargs = mock_get.call_args[1]
-        assert "timeout" not in call_kwargs
+        assert "timeout" in call_kwargs
+        assert call_kwargs["timeout"] == (10, 60)
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_streaming(self, mock_get, mock_env_vars):
@@ -104,5 +106,5 @@ class TestRocketAlertAPI:
 
         # Keyword arguments
         assert call_kwargs["headers"]["X-Test-Header"] == "test-value"
-        assert "timeout" not in call_kwargs
+        assert call_kwargs["timeout"] == (10, 60)
         assert call_kwargs["stream"] is True
