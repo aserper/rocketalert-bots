@@ -4,8 +4,10 @@
 #
 #    pip-compile requirements.in
 #
-authlib==1.6.5
-    # via python-twitter-v2
+authlib==1.6.6
+    # via
+    #   -r requirements.in
+    #   python-twitter-v2
 blurhash==1.1.4
     # via mastodon-py
 certifi==2025.8.3
@@ -28,8 +30,9 @@ idna==3.10
     # via requests
 iniconfig==2.1.0
     # via pytest
-marshmallow==3.26.1
+marshmallow==3.26.2
     # via
+    #   -r requirements.in
     #   dataclasses-json
     #   marshmallow-enum
 marshmallow-enum==1.5.1
@@ -92,7 +95,8 @@ typing-extensions==4.14.1
     # via typing-inspect
 typing-inspect==0.9.0
     # via dataclasses-json
-urllib3==2.6.0
+urllib3==2.6.3
     # via
+    #   -r requirements.in
     #   requests
     #   responses
