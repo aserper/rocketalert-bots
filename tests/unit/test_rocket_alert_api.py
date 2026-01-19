@@ -33,7 +33,7 @@ class TestRocketAlertAPI:
         # Verify requests.get was called with correct URL
         mock_get.assert_called_once()
         call_args = mock_get.call_args
-        assert call_args[0][0] == "https://test-api.example.com/real-time?alertTypeId=-1"
+        assert call_args[0][0] == "https://test-api.example.com/real-time?alertTypeId=-2"
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_headers(self, mock_get, mock_env_vars):
@@ -102,7 +102,7 @@ class TestRocketAlertAPI:
         call_args, call_kwargs = mock_get.call_args
 
         # URL as positional arg
-        assert call_args[0] == "https://test-api.example.com/real-time?alertTypeId=-1"
+        assert call_args[0] == "https://test-api.example.com/real-time?alertTypeId=-2"
 
         # Keyword arguments
         assert call_kwargs["headers"]["X-Test-Header"] == "test-value"
