@@ -57,10 +57,10 @@ class TestRocketAlertAPI:
         api.listenToServerEvents()
 
         # Verify timeout parameter is set (10s connect, 60s read)
-        # Read timeout is 3x the keep-alive interval (20s) for safety
+        # Read timeout is 2x the keep-alive interval (~65s) for safety
         call_kwargs = mock_get.call_args[1]
         assert "timeout" in call_kwargs
-        assert call_kwargs["timeout"] == (10, 60)
+        assert call_kwargs["timeout"] == (10, 120)
 
     @patch('rocket_alert_api.requests.get')
     def test_listenToServerEvents_streaming(self, mock_get, mock_env_vars):
@@ -106,5 +106,5 @@ class TestRocketAlertAPI:
 
         # Keyword arguments
         assert call_kwargs["headers"]["X-Test-Header"] == "test-value"
-        assert call_kwargs["timeout"] == (10, 60)
+        assert call_kwargs["timeout"] == (10, 120)
         assert call_kwargs["stream"] is True
