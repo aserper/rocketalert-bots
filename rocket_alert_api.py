@@ -22,5 +22,6 @@ class RocketAlertAPI:
         
         # Timeout: (connect_timeout, read_timeout)
         # Connect: 10s (fail fast if network down)
-        # Read: 60s (3x keep-alive interval of 20s - very conservative)
-        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-2", headers=self.headers, stream=True, timeout=(10, 60))
+        # Read: 120s (server keepalive interval is ~65s, 2x for safety)
+        read_timeout = int(os.environ.get('READ_TIMEOUT', 120))
+        return requests.get(f"{self.baseURL}/real-time?alertTypeId=-2", headers=self.headers, stream=True, timeout=(10, read_timeout))
