@@ -55,7 +55,7 @@ def main():
             print(f"{datetime.now()} - Program terminated")
             sys.exit(1)
         except requests.exceptions.ReadTimeout:
-            print(f"{datetime.now()} - Connection timeout (no data received in 60s), reconnecting...")
+            print(f"{datetime.now()} - Connection timeout (no data received), reconnecting...")
             continue
         except requests.exceptions.ConnectionError as e:
             print(f"{datetime.now()} - Connection error: {e}")
