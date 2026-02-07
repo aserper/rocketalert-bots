@@ -13,7 +13,7 @@ class RocketAlertAPI:
         }
 
     def listenToServerEvents(self):
-        print(f"DEBUG: Connecting to {self.baseURL}/real-time?alertTypeId=-1...", flush=True)
+        print(f"DEBUG: Connecting to {self.baseURL}/real-time?alertTypeId=-2...", flush=True)
         # Log headers safely (masking custom header value if possible, but for now just showing keys is safer or strict specific masking)
         safe_headers = self.headers.copy()
         if self.customHeaderKey in safe_headers:
